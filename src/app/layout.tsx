@@ -18,8 +18,8 @@ const beVietnam = Be_Vietnam_Pro({
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en">
-      <body className={`${doto.variable} ${beVietnam.variable}`}>{children}</body>
+    <html lang="en" className={`${doto.variable} ${beVietnam.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }
