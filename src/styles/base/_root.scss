@@ -1,0 +1,29 @@
+// src/styles/base/_root.scss
+
+//Dark Colors
+@mixin dark-colors {
+  color-scheme: dark;
+  --color-bg: #0f0f12;
+  --color-text: #ededf0;
+  --color-accent: #6ea8fe;
+}
+
+//Light Colors (Default)
+:root {
+  color-scheme: light;
+  --color-bg: #f7f7f8;
+  --color-text: #18181b;
+  --color-accent: #2563eb;
+}
+
+//Dark Mode From System Setting
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-colors;
+  }
+}
+
+//Dark Mode From Manual Toggle
+:root[data-theme='dark'] {
+  @include dark-colors;
+}

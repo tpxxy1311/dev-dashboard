@@ -1,0 +1,115 @@
+// src/styles/base/_reset.scss
+
+//Box-Sizing
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+//Remove Default Margin
+* {
+  margin: 0;
+}
+
+//Prevent iOS Text Size Adjust
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+//Body Defaults
+body {
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  text-selection: none;
+}
+
+//Responsive Media
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+//Inherit Fonts For Form Controls
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+//Unstyled Buttons
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+//Avoid Text Overflow
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+//Balanced Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+  line-height: 1.1;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+//Remove List Styles
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+//Inherit Link Color
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+//Vertical Textarea Resize
+textarea {
+  resize: vertical;
+}
+
+//Reduced Motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.05ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.05ms !important;
+    scroll-behavior: auto !important;
+  }
+}

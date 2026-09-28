@@ -1,0 +1,32 @@
+// src/styles/abstracts/_breakpoints.scss
+@use 'sass:map';
+
+$breakpoints: (
+  'sm': 40em,
+  'md': 48em,
+  'lg': 64em,
+  'xl': 80em,
+  '2xl': 96em,
+);
+
+//Min-Width Media Query
+@mixin up($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint "#{$name}". Available: #{map.keys($breakpoints)}';
+  }
+
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+//Max-Width Media Query
+@mixin down($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint "#{$name}". Available: #{map.keys($breakpoints)}';
+  }
+
+  @media (width < map.get($breakpoints, $name)) {
+    @content;
+  }
+}
