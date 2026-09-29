@@ -23,6 +23,9 @@ export const toggleTaskSchema = z.object({
   done: z.boolean(),
 });
 
+export const deleteTaskSchema = z.object({ id: taskIdSchema });
+
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 export type ToggleTaskInput = z.infer<typeof toggleTaskSchema>;
+export type DeleteTaskInput = z.infer<typeof deleteTaskSchema>;

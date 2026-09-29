@@ -1,0 +1,20 @@
+// src/styles/components/widgets/TaskWidget.module.scss
+@use "../../abstracts" as *;
+
+//Widget Frame
+.widget {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  border-radius: 0.75rem;
+
+  @include up("md") {
+    padding: 1.5rem;
+  }
+}
+
+//Title
+.title {
+  margin: 0;
+}

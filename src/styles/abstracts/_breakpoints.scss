@@ -1,12 +1,12 @@
 // src/styles/abstracts/_breakpoints.scss
-@use 'sass:map';
+@use "sass:map";
 
 $breakpoints: (
-  'sm': 40em,
-  'md': 48em,
-  'lg': 64em,
-  'xl': 80em,
-  '2xl': 96em,
+  "sm": 40em,
+  "md": 48em,
+  "lg": 64em,
+  "xl": 80em,
+  "2xl": 96em,
 );
 
 //Min-Width Media Query

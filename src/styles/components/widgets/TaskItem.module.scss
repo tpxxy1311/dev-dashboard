@@ -1,0 +1,32 @@
+// src/styles/components/widgets/TaskItem.module.scss
+@use "../../abstracts" as *;
+
+//Item
+.item {
+  padding: 0.5rem 0;
+
+  &[data-pending="true"] {
+    opacity: 0.5;
+  }
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.checkbox {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: inherit;
+}
+
+//Done State
+.item[data-done="true"] .title {
+  opacity: 0.6;
+  text-decoration: line-through;
+}

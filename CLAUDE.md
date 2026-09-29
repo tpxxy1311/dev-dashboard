@@ -18,6 +18,7 @@ Personal developer dashboard. Users sign in with GitHub and manage tasks.
 docker compose up -d      # Postgres on localhost:5433
 npm run dev               # dev server
 npm run lint
+npm run format            # Prettier (double quotes), format:check in CI
 npm run db:push           # sync the schema to the local database (current workflow)
 npm run db:studio         # browse the database
 npm run db:generate       # create a migration (not used yet, see below)
@@ -38,9 +39,15 @@ src/
 │   ├── (auth)/          # public: login
 │   ├── (dashboard)/     # protected app
 │   └── api/auth/        # Better Auth handler
+├── components/
+│   └── widgets/         # dashboard widgets (TaskWidget, TaskList, TaskItem)
 ├── lib/                 # client-safe code (auth-client)
+│   └── validations/     # Zod schemas, shared by client and server
 ├── server/              # server-only code: auth, db, session
+│   ├── actions/         # Server Actions (writes)
+│   ├── queries/         # read functions for Server Components
 │   └── db/schema/       # Drizzle tables, re-exported from index.ts
+├── types/               # shared TS types (Task, ActionResult), type-only imports
 ├── proxy.ts             # redirects to /login when no session cookie
 └── styles/              # all SCSS, see Styling
 ```
@@ -53,7 +60,7 @@ src/
 
 ## Server code
 
-- Files in `src/server/` must not be imported from Client Components. New server-only modules start with `import 'server-only';`.
+- Files in `src/server/` must not be imported from Client Components. New server-only modules start with `import "server-only";`.
 - Schema changes go in `src/server/db/schema/`, get exported from its `index.ts`, then `npm run db:push` (ask first).
 
 ## Data flow
@@ -92,14 +99,41 @@ an ID from the client:
 
 Authentication without authorization is not enough.
 
+## Server Actions
+
+- Signature: `(input: unknown) => Promise<ActionResult<T>>`. Actions take a plain
+  object, never `FormData`, so they work from forms, `startTransition` and anywhere else.
+- Order: `requireUser()` → `schema.safeParse(input)` → query → `revalidatePath()` → return.
+  Use only `parsed.data` after validation, never `input`.
+- `userId` always comes from `requireUser()`, never from the input.
+- Return `ActionResult<T>` from `@/types/action` for expected failures (invalid input,
+  not found) instead of throwing. Put Zod field errors in `fieldErrors` via
+  `z.flattenError(parsed.error).fieldErrors`.
+- Mutations use `.returning()`. An empty result means the row does not exist or
+  belongs to someone else: return `{ ok: false, error: "Task not found" }`.
+
+## Client Components
+
+- Forms use `useActionState` with a small adapter inside the component that turns
+  `FormData` into the object the action expects.
+- `useOptimistic` lives in the list component (e.g. `TaskList`), with a reducer over a
+  discriminated union (`{ type: "add" | "toggle" | "delete", … }`). Optimistic calls
+  outside `useActionState` go inside `startTransition`.
+- Items (e.g. `TaskItem`) are presentational: they get data and callbacks as props
+  and hold no server state.
+- Optimistic rows get a temporary `crypto.randomUUID()` id and `pending: true`;
+  disable actions on them until the real row arrives.
+- Row types come from Drizzle `$inferSelect` in `src/types/` and are imported with
+  `import type`, so Client Components can use them without pulling in server code.
+- UI text is English.
+
 ## Conventions
 
-- Server files start with `import 'server-only'`.
-- Zod schemas live in `lib/validation/`, since both client and server use them.
+- Server files start with `import "server-only"`.
+- Zod schemas live in `lib/validations/`, since both client and server use them.
 - Own tables: `timestamp(..., { withTimezone: true })`. The generated auth tables
   stay untouched.
 - Column names snake_case in the DB, camelCase in the TypeScript object.
-- The SCSS module sits next to its component; global tokens in `src/styles/`.
 - No manual `useMemo` / `useCallback` / `React.memo` — the React Compiler handles it.
 - The foreign key to `user.id` is **`text`**, not `uuid`.
 
@@ -109,11 +143,11 @@ Authentication without authorization is not enough.
   - `abstracts/`: variables, breakpoints and mixins. Must not output CSS.
   - `base/`: global CSS (reset, `:root` tokens, typography). Loaded only via `main.scss`, which is imported once in `src/app/layout.tsx`.
   - `layout/`: CSS Modules for the page frame (app, dashboard, auth, sidebar, header).
-  - `components/`: CSS Modules for reusable components.
+  - `components/`: CSS Modules for reusable components, mirroring `src/components/` (e.g. `components/widgets/TaskList.module.scss`, loaded with `@use "../../abstracts" as *;`).
 - Partials (only loaded via `@use`) start with `_`. Files imported from TSX end in `.module.scss` and have no `_`.
 - Name modules after their component: `Sidebar.tsx` uses `styles/layout/Sidebar.module.scss`.
-- In modules, load tools with `@use '../abstracts' as *;`. Use `@use`/`@forward`, never `@import`.
-- Write CSS mobile-first: base styles for small screens, then `@include up('md')`. Use `down()` only for small-screen-only exceptions.
-- Colors are semantic CSS custom properties from `base/_root.scss` (`--color-bg`, `--color-text`, `--color-accent`). Never hard-code colors in modules. Dark mode uses `prefers-color-scheme` and `[data-theme='dark']`, with the dark values in the `dark-colors` mixin.
-- Fonts come from `next/font/google` in the root layout: Be Vietnam Pro for body text (`--font-body`, only weights 300/400/500/700 are loaded), Doto for h1–h3 (`--font-display`, with `font-variation-settings: 'ROND' 100`).
+- In modules, load tools with `@use "../abstracts" as *;`. Use `@use`/`@forward`, never `@import`.
+- Write CSS mobile-first: base styles for small screens, then `@include up("md")`. Use `down()` only for small-screen-only exceptions.
+- Colors are semantic CSS custom properties from `base/_root.scss` (`--color-bg`, `--color-text`, `--color-accent`). Never hard-code colors in modules. Dark mode uses `prefers-color-scheme` and `[data-theme="dark"]`, with the dark values in the `dark-colors` mixin.
+- Fonts come from `next/font/google` in the root layout: Be Vietnam Pro for body text (`--font-body`, only weights 300/400/500/700 are loaded), Doto for h1–h3 (`--font-display`, with `font-variation-settings: "ROND" 100`).
 - Section comments in SCSS use the style `//Title Case Label` (no space, no numbering).

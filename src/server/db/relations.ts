@@ -1,8 +1,8 @@
 // src/server/db/relations.ts
 // Drizzle-only metadata for `db.query` + `with`. Creates no SQL; the foreign
 // keys in the schema files are what the database enforces.
-import { defineRelations } from 'drizzle-orm';
-import * as schema from './schema';
+import { defineRelations } from "drizzle-orm";
+import * as schema from "./schema";
 
 export const relations = defineRelations(schema, (r) => ({
   user: {

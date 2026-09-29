@@ -1,9 +1,9 @@
 // src/server/session.ts
-import 'server-only';
-import { cache } from 'react';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { auth } from './auth';
+import "server-only";
+import { cache } from "react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "./auth";
 
 /**
  * Returns the current session, or `null` if the user is not signed in.
@@ -26,6 +26,6 @@ export const getSession = cache(async () => {
  */
 export const requireUser = async () => {
   const session = await getSession();
-  if (!session) redirect('/login');
+  if (!session) redirect("/login");
   return session.user;
 };

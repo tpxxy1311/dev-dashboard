@@ -1,29 +1,36 @@
 // src/server/actions/tasks.ts
-'use server';
+"use server";
 
-import 'server-only';
-import { and, eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
-import { db } from '@/server/db';
-import { tasks } from '@/server/db/schema';
-import { requireUser } from '@/server/session';
-import { createTaskSchema, updateTaskSchema } from '@/lib/validations/tasks';
-import type { ActionResult } from '@/types/action';
-import type { Task } from '@/types/task';
+import "server-only";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { db } from "@/server/db";
+import { tasks } from "@/server/db/schema";
+import { requireUser } from "@/server/session";
+import {
+  createTaskSchema,
+  updateTaskSchema,
+  toggleTaskSchema,
+  deleteTaskSchema,
+} from "@/lib/validations/tasks";
+import type { ActionResult } from "@/types/action";
+import type { Task } from "@/types/task";
 
 /**
  * Creates a task for the signed-in user. `input` is `unknown` on purpose:
  * Server Actions are public POST endpoints, so everything is validated here.
  */
-export const createTask = async (input: unknown): Promise<ActionResult<Task>> => {
+export const createTask = async (
+  input: unknown,
+): Promise<ActionResult<Task>> => {
   const user = await requireUser();
 
   const parsed = createTaskSchema.safeParse(input);
   if (!parsed.success) {
     return {
       ok: false,
-      error: 'Invalid input',
+      error: "Invalid input",
       fieldErrors: z.flattenError(parsed.error).fieldErrors,
     };
   }
@@ -34,7 +41,7 @@ export const createTask = async (input: unknown): Promise<ActionResult<Task>> =>
     .values({ title: parsed.data.title, userId: user.id })
     .returning();
 
-  revalidatePath('/');
+  revalidatePath("/");
   return { ok: true, data: task };
 };
 
@@ -42,14 +49,16 @@ export const createTask = async (input: unknown): Promise<ActionResult<Task>> =>
  * Renames a task. Filters on id AND userId, so a task id belonging to another
  * user matches no row and is reported as not found.
  */
-export const updateTask = async (input: unknown): Promise<ActionResult<Task>> => {
+export const updateTask = async (
+  input: unknown,
+): Promise<ActionResult<Task>> => {
   const user = await requireUser();
 
   const parsed = updateTaskSchema.safeParse(input);
   if (!parsed.success) {
     return {
       ok: false,
-      error: 'Invalid input',
+      error: "Invalid input",
       fieldErrors: z.flattenError(parsed.error).fieldErrors,
     };
   }
@@ -60,8 +69,57 @@ export const updateTask = async (input: unknown): Promise<ActionResult<Task>> =>
     .where(and(eq(tasks.id, parsed.data.id), eq(tasks.userId, user.id)))
     .returning();
 
-  if (!task) return { ok: false, error: 'Task not found' };
+  if (!task) return { ok: false, error: "Task not found" };
 
-  revalidatePath('/');
+  revalidatePath("/");
   return { ok: true, data: task };
+};
+
+/**
+ * Toggles the completion status of a task. Filters on id AND userId, so a task id belonging to another
+ * user matches no row and is reported as not found.
+ */
+export const toggleTask = async (
+  input: unknown,
+): Promise<ActionResult<Task>> => {
+  const user = await requireUser();
+  const parsed = toggleTaskSchema.safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      error: "Invalid input",
+      fieldErrors: z.flattenError(parsed.error).fieldErrors,
+    };
+
+  const { id, done } = parsed.data;
+  const [task] = await db
+    .update(tasks)
+    .set({ done, completedAt: done ? new Date() : null })
+    .where(and(eq(tasks.id, id), eq(tasks.userId, user.id)))
+    .returning();
+
+  if (!task) return { ok: false, error: "Task not found" };
+  revalidatePath("/");
+  return { ok: true, data: task };
+};
+
+/**
+ * Deletes a task. Filters on id AND userId, so a task id belonging to another
+ * user matches no row and is reported as not found.
+ */
+export const deleteTask = async (
+  input: unknown,
+): Promise<ActionResult<{ id: string }>> => {
+  const user = await requireUser();
+  const parsed = deleteTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Invalid input" };
+
+  const [deleted] = await db
+    .delete(tasks)
+    .where(and(eq(tasks.id, parsed.data.id), eq(tasks.userId, user.id)))
+    .returning({ id: tasks.id });
+
+  if (!deleted) return { ok: false, error: "Task not found" };
+  revalidatePath("/");
+  return { ok: true, data: deleted };
 };
