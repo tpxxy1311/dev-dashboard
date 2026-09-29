@@ -1,5 +1,5 @@
 // src/server/db/index.ts
-//import 'server-only';
+import 'server-only';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { relations } from './relations';
@@ -12,5 +12,4 @@ const pool =
 
 if (process.env.NODE_ENV !== 'production') globalForDb.pool = pool;
 
-// export const db = drizzle({ client: pool, relations });
-export const db = drizzle({ client: pool });
+export const db = drizzle({ client: pool, relations });

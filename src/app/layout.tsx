@@ -1,5 +1,6 @@
 import { Doto, Be_Vietnam_Pro} from 'next/font/google';
 import '@/styles/main.scss';
+import styles from '@/styles/layout/AppLayout.module.scss';
 
 const doto = Doto({
   subsets: ['latin'],
@@ -19,7 +20,7 @@ const beVietnam = Be_Vietnam_Pro({
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${doto.variable} ${beVietnam.variable}`}>
-      <body>{children}</body>
+      <body className={styles.app}>{children}</body>
     </html>
   );
 }

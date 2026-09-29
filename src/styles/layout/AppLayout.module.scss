@@ -1,0 +1,9 @@
+// src/styles/layout/AppLayout.module.scss
+
+//App Frame
+.app {
+  --app-padding: 2rem;
+
+  min-height: 100dvh;
+  padding: var(--app-padding);
+}
