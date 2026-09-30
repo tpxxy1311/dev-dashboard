@@ -10,7 +10,6 @@ export default async function Notes() {
 
   return (
     <div className={styles.page}>
-      <h1>Notes</h1>
       <NoteList initialNotes={notes} />
     </div>
   );

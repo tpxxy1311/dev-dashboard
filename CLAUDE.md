@@ -109,6 +109,7 @@ Authentication without authorization is not enough.
 - Return `ActionResult<T>` from `@/types/action` for expected failures (invalid input,
   not found) instead of throwing. Put Zod field errors in `fieldErrors` via
   `z.flattenError(parsed.error).fieldErrors`.
+- Exception: `signOut` in `server/actions/signOut.ts` takes no input, returns nothing and ends with `redirect("/login")`.
 - Mutations use `.returning()`. An empty result means the row does not exist or
   belongs to someone else: return `{ ok: false, error: "Task not found" }`.
 

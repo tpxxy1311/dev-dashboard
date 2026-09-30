@@ -1,18 +1,13 @@
 // src/app/(auth)/login/page.tsx
-"use client";
-import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
+import { getSession } from "@/server/session";
+import GitHubSignInButton from "@/components/auth/gitHubSignInButton";
 
-export default function LoginPage() {
-  return (
-    <button
-      onClick={() =>
-        authClient.signIn.social({
-          provider: "github",
-          callbackURL: "/",
-        })
-      }
-    >
-      Mit GitHub anmelden
-    </button>
-  );
+export default async function LoginPage() {
+  // Signed-in users don't need the login page. getSession() checks the
+  // database, so a stale cookie can't cause a redirect loop with proxy.ts.
+  const session = await getSession();
+  if (session) redirect("/");
+
+  return <GitHubSignInButton />;
 }

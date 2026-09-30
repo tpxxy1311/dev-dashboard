@@ -1,0 +1,10 @@
+// src/styles/components/ui/Header.module.scss
+@use "../../abstracts" as *;
+
+//Header
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}

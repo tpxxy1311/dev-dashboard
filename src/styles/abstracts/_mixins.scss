@@ -1,0 +1,16 @@
+// src/styles/abstracts/_mixins.scss
+
+//Dark Mode
+// Styles the current selector in dark mode, from the system setting or the
+// manual toggle. Mirrors the conditions in base/_root.scss.
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) & {
+      @content;
+    }
+  }
+
+  :root[data-theme="dark"] & {
+    @content;
+  }
+}
