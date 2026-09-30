@@ -1,5 +1,5 @@
-// src/components/widgets/TaskWidget.tsx
-import styles from "@/styles/components/widgets/TaskWidget.module.scss";
+// src/components/widgets/tasks/TaskWidget.tsx
+import styles from "@/styles/components/widgets/tasks/TaskWidget.module.scss";
 import TaskList from "./TaskList";
 import { getTasks } from "@/server/queries/tasks";
 

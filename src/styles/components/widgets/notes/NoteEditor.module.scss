@@ -1,0 +1,67 @@
+// src/styles/components/widgets/notes/NoteEditor.module.scss
+@use "../../../abstracts" as *;
+
+//Form
+.form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.input,
+.textarea {
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 25%, transparent);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+}
+
+.textarea {
+  min-block-size: 6rem;
+  resize: vertical;
+}
+
+//Messages
+.error {
+  margin: 0;
+  color: var(--color-accent);
+}
+
+//Actions
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.button,
+.secondaryButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font: inherit;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.button {
+  border: 0;
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.secondaryButton {
+  border: 1px solid color-mix(in srgb, var(--color-text) 25%, transparent);
+  background: transparent;
+  color: inherit;
+}

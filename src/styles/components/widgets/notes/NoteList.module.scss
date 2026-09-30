@@ -1,0 +1,37 @@
+// src/styles/components/widgets/notes/NoteList.module.scss
+@use "../../../abstracts" as *;
+
+//List Frame
+.noteList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+//Messages
+.error {
+  margin: 0;
+  color: var(--color-accent);
+}
+
+.empty {
+  margin: 0;
+  opacity: 0.7;
+}
+
+//Notes Grid
+.list {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up("md") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up("lg") {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

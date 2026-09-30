@@ -1,0 +1,8 @@
+// src/styles/layout/pages/Notes.module.scss
+@use "../../abstracts" as *;
+
+//Page Frame
+.page {
+  display: grid;
+  gap: 1.5rem;
+}

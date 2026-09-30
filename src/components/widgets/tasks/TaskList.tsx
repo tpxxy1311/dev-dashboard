@@ -1,4 +1,4 @@
-// src/components/widgets/TaskList.tsx
+// src/components/widgets/tasks/TaskList.tsx
 "use client";
 
 import {
@@ -7,7 +7,7 @@ import {
   useOptimistic,
   useState,
 } from "react";
-import styles from "@/styles/components/widgets/TaskList.module.scss";
+import styles from "@/styles/components/widgets/tasks/TaskList.module.scss";
 import TaskItem from "./TaskItem";
 import { createTask, deleteTask, toggleTask } from "@/server/actions/tasks";
 import { createTaskSchema } from "@/lib/validations/tasks";

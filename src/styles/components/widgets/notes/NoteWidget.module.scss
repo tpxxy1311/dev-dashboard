@@ -1,0 +1,68 @@
+// src/styles/components/widgets/notes/NoteWidget.module.scss
+@use "../../../abstracts" as *;
+
+//Widget Frame
+.widget {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  border-radius: 0.75rem;
+
+  @include up("md") {
+    padding: 1.5rem;
+  }
+}
+
+//Header
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+}
+
+.link {
+  color: var(--color-accent);
+}
+
+//Note
+.note {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.badge {
+  justify-self: start;
+  margin: 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.noteTitle {
+  margin: 0;
+}
+
+.content {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  white-space: pre-line;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+//Messages
+.empty {
+  margin: 0;
+  opacity: 0.7;
+}

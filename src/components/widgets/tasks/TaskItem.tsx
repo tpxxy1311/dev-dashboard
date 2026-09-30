@@ -1,7 +1,7 @@
-// src/components/widgets/TaskItem.tsx
+// src/components/widgets/tasks/TaskItem.tsx
 "use client";
 
-import styles from "@/styles/components/widgets/TaskItem.module.scss";
+import styles from "@/styles/components/widgets/tasks/TaskItem.module.scss";
 import type { OptimisticTask } from "@/types/task";
 
 type Props = {

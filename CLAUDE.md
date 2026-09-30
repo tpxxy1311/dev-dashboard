@@ -143,7 +143,7 @@ Authentication without authorization is not enough.
   - `abstracts/`: variables, breakpoints and mixins. Must not output CSS.
   - `base/`: global CSS (reset, `:root` tokens, typography). Loaded only via `main.scss`, which is imported once in `src/app/layout.tsx`.
   - `layout/`: CSS Modules for the page frame (app, dashboard, auth, sidebar, header).
-  - `components/`: CSS Modules for reusable components, mirroring `src/components/` (e.g. `components/widgets/TaskList.module.scss`, loaded with `@use "../../abstracts" as *;`).
+  - `components/`: CSS Modules for reusable components, mirroring `src/components/` (e.g. `components/widgets/tasks/TaskList.module.scss`, loaded with `@use "../../../abstracts" as *;`).
 - Partials (only loaded via `@use`) start with `_`. Files imported from TSX end in `.module.scss` and have no `_`.
 - Name modules after their component: `Sidebar.tsx` uses `styles/layout/Sidebar.module.scss`.
 - In modules, load tools with `@use "../abstracts" as *;`. Use `@use`/`@forward`, never `@import`.

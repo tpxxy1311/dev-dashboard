@@ -1,0 +1,70 @@
+// src/styles/components/widgets/notes/NoteItem.module.scss
+@use "../../../abstracts" as *;
+
+//Card
+.item {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
+  border-radius: 0.75rem;
+
+  &[data-pinned="true"] {
+    border-color: var(--color-accent);
+  }
+
+  &[data-pending="true"] {
+    opacity: 0.5;
+  }
+}
+
+//Content
+.badge {
+  justify-self: start;
+  margin: 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.content {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+//Actions
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 25%, transparent);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
