@@ -1,0 +1,73 @@
+// src/styles/components/ui/Sidebar.module.scss
+@use "../../abstracts" as *;
+
+//Hidden On Small Screens And Touch Devices
+.sidebar {
+  display: none;
+}
+
+//Hover Sidebar For Mouse Users
+@include up("md") {
+  @media (hover: hover) and (pointer: fine) {
+    .sidebar {
+      position: fixed;
+      inset-block: 0;
+      inset-inline-start: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      width: $sidebar-width;
+      padding-block: 1rem;
+      background-color: var(--color-surface);
+      border-inline-end: 1px solid var(--color-border);
+      transform: translateX(calc(-100% + #{$sidebar-peek}));
+      transition: transform 200ms ease $sidebar-close-delay;
+
+      //Invisible Hover Zone Next To The Visible Strip
+      &::after {
+        content: "";
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 100%;
+        width: $sidebar-trigger;
+      }
+
+      &:hover,
+      &:focus-within {
+        transform: translateX(0);
+        transition-delay: 0ms;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+  }
+}
+
+//Navigation List
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.link {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  transition: color 150ms ease;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
