@@ -93,14 +93,23 @@
   scale: 1;
 }
 
+.deleteButton{
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
 //Checkbox Hover
 // Whole row is the click target (label), so hovering it highlights the circle.
 // Only on devices with a real hover, to avoid sticky hover on touch.
 @media (hover: hover) {
+  .item:hover .deleteButton:not(:disabled) {
+    opacity: 1;
+  }
   .label:hover .checkbox:not(:disabled, :checked) {
     border-color: var(--color-text);
     background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
   }
+
 }
 
 //Done State
