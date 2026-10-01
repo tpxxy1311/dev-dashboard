@@ -113,3 +113,9 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
+//Hidden Attribute
+// Keeps `hidden` working on elements whose class sets `display`.
+[hidden] {
+  display: none !important;
+}

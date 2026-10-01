@@ -8,10 +8,7 @@ const TaskWidget = async () => {
   const tasks = await getTasks();
 
   return (
-    <section className={styles.widget} aria-labelledby="task-widget-title">
-      <h2 id="task-widget-title" className={styles.title}>
-        Tasks
-      </h2>
+    <section className={styles.widget} aria-label="Tasks">
       <TaskList initialTasks={tasks} />
     </section>
   );

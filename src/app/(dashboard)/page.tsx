@@ -9,9 +9,9 @@ export default function Dashboard() {
       <Suspense fallback={<p>Loading tasks…</p>}>
         <TaskWidget />
       </Suspense>
-      <Suspense fallback={<p>Loading notes…</p>}>
+      {/* <Suspense fallback={<p>Loading notes…</p>}>
         <NoteWidget />
-      </Suspense>
+      </Suspense> */}
     </>
   );
 }

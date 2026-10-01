@@ -9,6 +9,7 @@ import {
 } from "react";
 import styles from "@/styles/components/widgets/tasks/TaskList.module.scss";
 import TaskItem from "./TaskItem";
+import TaskHeader, { type TaskFilter } from "./TaskHeader";
 import { createTask, deleteTask, toggleTask } from "@/server/actions/tasks";
 import { createTaskSchema } from "@/lib/validations/tasks";
 import type { ActionResult } from "@/types/action";
@@ -17,6 +18,8 @@ import type { OptimisticTask, Task } from "@/types/task";
 type Props = { initialTasks: Task[] };
 
 type CreateState = ActionResult<Task> | null;
+
+const FORM_ID = "task-create-form";
 
 type OptimisticAction =
   | { type: "add"; task: OptimisticTask }
@@ -54,6 +57,8 @@ const TaskList = ({ initialTasks }: Props) => {
     OptimisticAction
   >(initialTasks, applyAction);
   const [itemError, setItemError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<TaskFilter>("open");
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Runs inside a transition (started by useActionState), so optimistic updates are allowed.
   const submitCreate = async (
@@ -61,6 +66,8 @@ const TaskList = ({ initialTasks }: Props) => {
     formData: FormData,
   ): Promise<CreateState> => {
     const input = { title: formData.get("title") };
+    // New tasks are open, so show them.
+    setFilter("open");
 
     // Same schema as the server: skips the round trip for obviously invalid input.
     const parsed = createTaskSchema.safeParse(input);
@@ -104,12 +111,35 @@ const TaskList = ({ initialTasks }: Props) => {
     });
   };
 
+  // Derived from the optimistic list, so counts and tabs update instantly.
+  const openCount = optimisticTasks.filter((task) => !task.done).length;
+  const doneCount = optimisticTasks.length - openCount;
+  const visibleTasks = optimisticTasks.filter((task) =>
+    filter === "done" ? task.done : !task.done,
+  );
+
   const titleError =
     state && !state.ok ? (state.fieldErrors?.title?.[0] ?? state.error) : null;
 
   return (
     <div className={styles.taskList}>
-      <form action={formAction} className={styles.form}>
+      <TaskHeader
+        filter={filter}
+        onFilterChange={setFilter}
+        openCount={openCount}
+        doneCount={doneCount}
+        isFormOpen={isFormOpen}
+        onToggleForm={() => setIsFormOpen((open) => !open)}
+        formId={FORM_ID}
+      />
+
+      {/* Kept mounted (hidden) so aria-controls always points to an element. */}
+      <form
+        id={FORM_ID}
+        action={formAction}
+        hidden={!isFormOpen}
+        className={styles.form}
+      >
         <input
           name="title"
           type="text"
@@ -138,11 +168,16 @@ const TaskList = ({ initialTasks }: Props) => {
         </p>
       )}
 
-      {optimisticTasks.length === 0 ? (
-        <p className={styles.empty}>No tasks yet.</p>
+      {visibleTasks.length === 0 ? (
+        <div className={styles.emptyContainer}>
+          <p className={styles.emptyNumber}>0</p>
+          <p className={styles.emptyText}>
+            {filter === "open" ? "No open tasks." : "No completed tasks yet."}
+          </p>
+        </div>
       ) : (
         <ul className={styles.list}>
-          {optimisticTasks.map((task) => (
+          {visibleTasks.map((task) => (
             <TaskItem
               key={task.id}
               task={task}

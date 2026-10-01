@@ -3,21 +3,22 @@
 //Dark Colors
 @mixin dark-colors {
   color-scheme: dark;
-  --color-bg: #0f0f12;
+  --color-bg: #1d1d1d;
   --color-surface: #3d3d43;
   --color-border: #2a2a30;
   --color-text: #ededf0;
-  --color-accent: #6ea8fe;
+  --color-accent: #dff409;
 }
 
 //Light Colors (Default)
 :root {
   color-scheme: light;
-  --color-bg: #f7f7f8;
+  --color-bg: #e1e1e1;
   --color-surface: #ffffff;
   --color-border: #e4e4e7;
-  --color-text: #18181b;
-  --color-accent: #2563eb;
+  --color-text: #111111;
+  --color-text-variant: #393939;
+  --color-accent: #cedf10;
 }
 
 //Dark Mode From System Setting

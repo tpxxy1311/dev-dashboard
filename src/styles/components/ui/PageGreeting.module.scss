@@ -1,0 +1,18 @@
+.pageGreeting {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  .greetingTitle {
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
+  .greetingDate {
+    font-size: 0.8rem;
+    color: var(--color-text-variant);
+  }
+  .seperator {
+    margin-inline: 0.5rem;
+  }
+}

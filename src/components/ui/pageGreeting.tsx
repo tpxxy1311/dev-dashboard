@@ -1,6 +1,7 @@
 // src/components/ui/pageGreeting.tsx
 "use client";
 
+import style from "@/styles/components/ui/PageGreeting.module.scss";
 import { useNow } from "@/hooks/useNow";
 import { formatLongDate, formatTime, getGreeting } from "@/lib/helpers/date";
 import { getFirstName } from "@/lib/helpers/user";
@@ -17,7 +18,7 @@ const PageGreeting = ({ name }: PageGreetingProps) => {
   // non-breaking space so the layout doesn't jump.
   if (!now) {
     return (
-      <div>
+      <div className={style.pageGreeting}>
         <h1>{" "}</h1>
         <p>{" "}</p>
       </div>
@@ -25,13 +26,13 @@ const PageGreeting = ({ name }: PageGreetingProps) => {
   }
 
   return (
-    <div>
-      <h1>
+    <div className={style.pageGreeting}>
+      <h1 className={style.greetingTitle}>
         {getGreeting(now)}, {firstName}
       </h1>
-      <p>
+      <p className={style.greetingDate}>
         {formatLongDate(now)}
-        <span></span>
+        <span className={style.seperator}>•</span>
         <time dateTime={now.toISOString()}>{formatTime(now)}</time>
       </p>
     </div>

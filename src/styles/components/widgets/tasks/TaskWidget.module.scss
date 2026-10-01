@@ -6,15 +6,18 @@
   display: grid;
   gap: 1rem;
   padding: 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
-  border-radius: 0.75rem;
-
+  background-color: var(--color-surface);
+  border-radius: 25%;
+  corner-shape: squircle;
+  width: 33%;
+  height: 40vh;
   @include up("md") {
     padding: 1.5rem;
   }
 }
 
 //Title
+// Screen-reader only: the visible header shows tabs instead of a title.
 .title {
-  margin: 0;
+  @include visually-hidden;
 }
