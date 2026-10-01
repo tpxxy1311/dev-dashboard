@@ -101,5 +101,6 @@
   // Flex items do not shrink below their content unless min-height is 0.
   min-height: 0;
   flex: 1;
+  font-size: 0.9rem;
   overflow-y: auto;
 }
