@@ -123,44 +123,49 @@ const TaskList = ({ initialTasks }: Props) => {
 
   return (
     <div className={styles.taskList}>
-      <TaskHeader
-        filter={filter}
-        onFilterChange={setFilter}
-        openCount={openCount}
-        doneCount={doneCount}
-        isFormOpen={isFormOpen}
-        onToggleForm={() => setIsFormOpen((open) => !open)}
-        formId={FORM_ID}
-      />
-
-      {/* Kept mounted (hidden) so aria-controls always points to an element. */}
-      <form
-        id={FORM_ID}
-        action={formAction}
-        hidden={!isFormOpen}
-        className={styles.form}
-      >
-        <input
-          name="title"
-          type="text"
-          placeholder="Add a task…"
-          aria-label="New task"
-          aria-invalid={titleError ? true : undefined}
-          aria-describedby={titleError ? "task-title-error" : undefined}
-          maxLength={200}
-          required
-          className={styles.input}
+      {/* Positioning context: the form popover sits right below the header. */}
+      <div className={styles.top}>
+        <TaskHeader
+          filter={filter}
+          onFilterChange={setFilter}
+          openCount={openCount}
+          doneCount={doneCount}
+          isFormOpen={isFormOpen}
+          onToggleForm={() => setIsFormOpen((open) => !open)}
+          formId={FORM_ID}
         />
-        <button type="submit" disabled={isPending} className={styles.button}>
-          {isPending ? "Adding…" : "Add"}
-        </button>
-      </form>
 
-      {titleError && (
-        <p id="task-title-error" role="alert" className={styles.error}>
-          {titleError}
-        </p>
-      )}
+        {/* Kept mounted (hidden) so aria-controls always points to an element.
+            Overlays the list instead of pushing it down. */}
+        <div id={FORM_ID} hidden={!isFormOpen} className={styles.formPopover}>
+          <form action={formAction} className={styles.form}>
+            <input
+              name="title"
+              type="text"
+              placeholder="Add a task…"
+              aria-label="New task"
+              aria-invalid={titleError ? true : undefined}
+              aria-describedby={titleError ? "task-title-error" : undefined}
+              maxLength={200}
+              required
+              className={styles.input}
+            />
+            <button
+              type="submit"
+              disabled={isPending}
+              className={styles.button}
+            >
+              {isPending ? "Adding…" : "Add"}
+            </button>
+          </form>
+
+          {titleError && (
+            <p id="task-title-error" role="alert" className={styles.error}>
+              {titleError}
+            </p>
+          )}
+        </div>
+      </div>
 
       {itemError && (
         <p role="alert" className={styles.error}>

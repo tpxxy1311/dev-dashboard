@@ -7,9 +7,30 @@
   justify-content: space-between;
   flex-direction: column;
   gap: 0.75rem;
+  // Lets the list shrink and scroll inside the fixed-height widget.
+  min-height: 0;
+}
+
+//Header Area
+.top {
+  position: relative;
 }
 
 //Create Form
+.formPopover {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 1;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 10rem;
+  corner-shape: squircle;
+  background: var(--color-surface-overlay);
+  backdrop-filter: blur(10px);
+}
+
 .form {
   display: flex;
   gap: 0.5rem;
@@ -19,22 +40,21 @@
   flex: 1;
   min-width: 0;
   padding: 0.5rem 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-text) 25%, transparent);
+  border: none;
   border-radius: 0.5rem;
   background: transparent;
   color: inherit;
   font: inherit;
 
   &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 1px;
+    outline: none;
   }
 }
 
 .button {
   padding: 0.5rem 1rem;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: 20rem;
   background: var(--color-accent);
   color: var(--color-bg);
   font: inherit;
@@ -77,4 +97,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  // Flex items do not shrink below their content unless min-height is 0.
+  min-height: 0;
+  overflow-y: auto;
 }
