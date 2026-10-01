@@ -28,3 +28,50 @@
   white-space: nowrap;
   border: 0;
 }
+
+//Glow Surface
+// Gradient widget background: dark core, bright edges, a tint near the bottom,
+// a glowing rim and film grain. $tone picks the --color-glow-<tone>-* tokens
+// from base/_root.scss. Text tokens are switched to light values inside, so
+// child modules using --color-text / --color-text-variant stay readable.
+// Fine-tune per widget by overriding the --glow-* properties.
+@mixin glow-surface($tone: "blue") {
+  --glow-core: var(--color-glow-#{$tone}-core);
+  --glow-edge: var(--color-glow-#{$tone}-edge);
+  --glow-tint: var(--color-glow-#{$tone}-tint);
+  --glow-core-size: 75% 60%; // ellipse of the dark center
+  --glow-core-position: 50% 45%;
+  --glow-grain: 0.15; // grain opacity, 0 turns it off
+  --color-text: var(--color-on-glow);
+  --color-text-variant: var(--color-on-glow-variant);
+
+  position: relative;
+  isolation: isolate;
+  color: var(--color-text);
+  background:
+    radial-gradient(90% 40% at 30% 105%, var(--glow-tint), transparent 70%),
+    radial-gradient(
+      var(--glow-core-size) at var(--glow-core-position),
+      var(--glow-core) 0%,
+      var(--glow-edge) 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-on-glow) 25%, transparent),
+    inset 0 0 2rem color-mix(in srgb, var(--color-on-glow) 20%, transparent);
+    //0 1rem 2.5rem -1.5rem var(--glow-edge);
+
+  // Grain: SVG noise behind the content (z-index -1 inside the isolated stack)
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    corner-shape: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+    opacity: var(--glow-grain);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+}

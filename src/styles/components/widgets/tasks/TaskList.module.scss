@@ -59,7 +59,8 @@
   color: var(--color-text);
   font: inherit;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 0.9rem;
   &:disabled {
     opacity: 0.6;
     cursor: default;

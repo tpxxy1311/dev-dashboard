@@ -21,7 +21,8 @@ import type {
 const API_URL = "https://api.github.com";
 // Responses are cached per user (the token header is part of the cache key).
 const REVALIDATE_SECONDS = 300;
-const PUSH_WINDOW_DAYS = 30;
+// Push count and calendar both cover the last 30 days.
+const ACTIVITY_WINDOW_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
 // The Events API returns at most 300 events: 3 pages of 100.
 const EVENTS_PER_PAGE = 100;
@@ -96,34 +97,39 @@ const getContributionCalendar = async (
     body: JSON.stringify({ query: CALENDAR_QUERY }),
   });
   const { viewer } = contributionCalendarResponseSchema.parse(json).data;
-  const { totalContributions, weeks } =
-    viewer.contributionsCollection.contributionCalendar;
+  const { weeks } = viewer.contributionsCollection.contributionCalendar;
+
+  // GitHub returns the past year ending today. Keep only the last
+  // ACTIVITY_WINDOW_DAYS days. Levels stay relative to the whole year, so
+  // colors don't shift as the window moves.
+  const days = weeks
+    .flatMap((week) => week.contributionDays)
+    .slice(-ACTIVITY_WINDOW_DAYS)
+    .map((day) => ({
+      date: day.date,
+      weekday: day.weekday,
+      count: day.contributionCount,
+      level: levels[day.contributionLevel],
+    }));
 
   return {
     login: viewer.login,
     calendar: {
-      total: totalContributions,
-      weeks: weeks.map((week) =>
-        week.contributionDays.map((day) => ({
-          date: day.date,
-          weekday: day.weekday,
-          count: day.contributionCount,
-          level: levels[day.contributionLevel],
-        })),
-      ),
+      total: days.reduce((sum, day) => sum + day.count, 0),
+      days,
     },
   };
 };
 
 /**
- * Counts the user's push events in the last PUSH_WINDOW_DAYS days. Events
+ * Counts the user's push events in the last ACTIVITY_WINDOW_DAYS days. Events
  * come newest first, so paging stops once a page reaches past the window.
  */
 const countRecentPushes = async (
   login: string,
   token: string,
 ): Promise<number> => {
-  const since = Date.now() - PUSH_WINDOW_DAYS * DAY_MS;
+  const since = Date.now() - ACTIVITY_WINDOW_DAYS * DAY_MS;
   let count = 0;
 
   for (let page = 1; page <= MAX_EVENT_PAGES; page++) {
@@ -156,7 +162,7 @@ export const getGitHubActivity = async (): Promise<GitHubActivity | null> => {
     const { login, calendar } = await getContributionCalendar(token);
     const pushCount = await countRecentPushes(login, token);
 
-    return { pushCount, pushWindowDays: PUSH_WINDOW_DAYS, calendar };
+    return { pushCount, windowDays: ACTIVITY_WINDOW_DAYS, calendar };
   } catch (error) {
     console.error("Failed to load GitHub activity", error);
     return null;

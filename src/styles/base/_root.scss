@@ -23,6 +23,15 @@
   --color-text-variant: #434343;
   --color-accent: #cedf10;
   --color-on-accent: #111111;
+
+  //Glow Surfaces
+  // Used by the glow-surface mixin. Same in both themes: the surface is
+  // always dark in the middle, so text on it uses --color-on-glow.
+  --color-on-glow: #ffffff;
+  --color-on-glow-variant: #ffffffb3;
+  --color-glow-blue-core: #070d63;
+  --color-glow-blue-edge: #2b8de8;
+  --color-glow-blue-tint: #9d8fe6;
 }
 
 //Dark Mode From System Setting

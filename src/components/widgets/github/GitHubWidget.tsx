@@ -16,10 +16,7 @@ const GitHubWidget = async () => {
 
       {activity ? (
         <>
-          <PushCount
-            count={activity.pushCount}
-            days={activity.pushWindowDays}
-          />
+          <PushCount count={activity.pushCount} days={activity.windowDays} />
           <ContributionCalendar calendar={activity.calendar} />
         </>
       ) : (

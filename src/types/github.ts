@@ -14,11 +14,11 @@ export type ContributionDay = {
 
 export type ContributionCalendarData = {
   total: number;
-  weeks: ContributionDay[][];
+  days: ContributionDay[]; // oldest first
 };
 
 export type GitHubActivity = {
   pushCount: number;
-  pushWindowDays: number;
+  windowDays: number; // days covered by pushCount and calendar
   calendar: ContributionCalendarData;
 };
