@@ -41,7 +41,7 @@ const TaskItem = ({ task, onToggle, onDelete }: Props) => {
         aria-label={`Delete "${task.title}"`}
         className={styles.deleteButton}
       >
-        <TrashIcon width={14} height={14} aria-hidden="true" />
+        <TrashIcon width={18} height={18} aria-hidden="true" />
       </button>
     </li>
   );

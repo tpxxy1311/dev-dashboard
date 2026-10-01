@@ -56,10 +56,10 @@
   border: 0;
   border-radius: 20rem;
   background: var(--color-accent);
-  color: var(--color-bg);
+  color: var(--color-text);
   font: inherit;
   cursor: pointer;
-
+  font-weight: 500;
   &:disabled {
     opacity: 0.6;
     cursor: default;
