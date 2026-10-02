@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import GitHubWidget from "@/components/widgets/github/GitHubWidget";
 import NoteWidget from "@/components/widgets/notes/NoteWidget";
 import TaskWidget from "@/components/widgets/tasks/TaskWidget";
+import SpotifyWidget from "@/components/widgets/spotify/SpotifyWidget";
 
 export default function Dashboard() {
   return (
@@ -15,6 +16,7 @@ export default function Dashboard() {
         <Suspense fallback={<p>Loading GitHub activity…</p>}>
           <GitHubWidget />
         </Suspense>
+        <SpotifyWidget />
       </div>
       {/* <Suspense fallback={<p>Loading notes…</p>}>
         <NoteWidget />

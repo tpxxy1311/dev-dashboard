@@ -17,9 +17,14 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       scope: ["read:user", "user:email"],
     },
+    spotify: {
+      clientId: process.env.SPOTIFY_CLIENT_ID!,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+      scope: ["user-read-currently-playing", "user-read-recently-played"],
+    },
   },
   account: {
-    accountLinking: { enabled: true },
+    accountLinking: { enabled: true, allowDifferentEmails: true, trustedProviders: ["spotify"], },
   },
   // Applies cookies set by auth.api.* calls in Server Actions. Must stay last.
   plugins: [nextCookies()],
