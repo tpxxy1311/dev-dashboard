@@ -2,6 +2,7 @@
 import styles from "@/styles/components/widgets/spotify/SpotifyWidget.module.scss";
 import SpotifyConnectionButton from "./SpotifyConnectionButton";
 import { getSpotifyPlayback } from "@/server/queries/spotify";
+import SpotifyNowPlaying from "./SpotifyNowPlaying";
 
 const SpotifyWidget = async () => {
   const playback = await getSpotifyPlayback();
@@ -12,10 +13,7 @@ const SpotifyWidget = async () => {
       {!playback.connected ? (
         <SpotifyConnectionButton />
       ) : playback.nowPlaying ? (
-        <p>
-          {playback.nowPlaying.status}: {playback.nowPlaying.track.title} –{" "}
-          {playback.nowPlaying.track.artists}
-        </p>
+        <SpotifyNowPlaying initial={playback.nowPlaying} />
       ) : (
         <p>Spotify is unavailable.</p>
       )}

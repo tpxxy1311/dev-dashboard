@@ -1,0 +1,36 @@
+// src/styles/components/widgets/spotify/SpotifyProgress.module.scss
+@use "../../../abstracts" as *;
+
+//Track
+.track {
+  block-size: 0.25rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-text) 15%, transparent);
+  overflow: hidden;
+}
+
+//Bar
+// Scales from the current position (--start) to full width over the
+// remaining time (--remaining). Paused tracks hold the start position.
+.bar {
+  block-size: 100%;
+  background-color: var(--color-accent);
+  transform-origin: left;
+  scale: var(--start) 1;
+  animation: fill var(--remaining) linear forwards;
+  animation-play-state: paused;
+
+  &[data-playing="true"] {
+    animation-play-state: running;
+  }
+}
+
+@keyframes fill {
+  from {
+    scale: var(--start) 1;
+  }
+
+  to {
+    scale: 1 1;
+  }
+}

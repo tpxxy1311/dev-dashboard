@@ -16,7 +16,9 @@ export default function Dashboard() {
         <Suspense fallback={<p>Loading GitHub activity…</p>}>
           <GitHubWidget />
         </Suspense>
-        <SpotifyWidget />
+        <Suspense fallback={<p>Loading Spotify…</p>}>
+          <SpotifyWidget />
+        </Suspense>
       </div>
       {/* <Suspense fallback={<p>Loading notes…</p>}>
         <NoteWidget />
