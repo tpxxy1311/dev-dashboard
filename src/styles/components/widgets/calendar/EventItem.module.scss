@@ -1,0 +1,50 @@
+// src/styles/components/widgets/calendar/EventItem.module.scss
+@use "../../../abstracts" as *;
+
+//Item
+.item {
+  // Dot color per label, set below via data-label.
+  --label-color: var(--color-label-private);
+
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 0.375rem;
+  font-size: var(--text-sm);
+}
+
+//Label Colors
+.item[data-label="work"] {
+  --label-color: var(--color-label-work);
+}
+
+.item[data-label="vacation"] {
+  --label-color: var(--color-label-vacation);
+}
+
+.item[data-label="birthday"] {
+  --label-color: var(--color-label-birthday);
+}
+
+.dot {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background: var(--label-color);
+}
+
+//Text
+.time {
+  // Fixed width so titles line up, whether "09:00–10:30" or "All day".
+  min-inline-size: 5.75rem;
+  color: var(--color-text-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

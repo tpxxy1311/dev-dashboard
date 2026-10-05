@@ -5,6 +5,7 @@ import GitHubWidget from "@/components/widgets/github/GitHubWidget";
 import NoteWidget from "@/components/widgets/notes/NoteWidget";
 import TaskWidget from "@/components/widgets/tasks/TaskWidget";
 import SpotifyWidget from "@/components/widgets/spotify/SpotifyWidget";
+import CalendarWidget from "@/components/widgets/calendar/CalendarWidget";
 
 export default function Dashboard() {
   return (
@@ -15,6 +16,9 @@ export default function Dashboard() {
         </Suspense>
         <Suspense fallback={<p>Loading GitHub activity…</p>}>
           <GitHubWidget />
+        </Suspense>
+        <Suspense fallback={<p>Loading Events…</p>}>
+          <CalendarWidget/>
         </Suspense>
         <Suspense fallback={<p>Loading Spotify…</p>}>
           <SpotifyWidget />

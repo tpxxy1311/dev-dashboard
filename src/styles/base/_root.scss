@@ -9,6 +9,10 @@
   --color-text: #ededf0;
   --color-accent: #dff409;
   --color-on-accent: #111111;
+  --color-label-private: #5aa9f0;
+  --color-label-work: #b3a8f0;
+  --color-label-vacation: #3ccf98;
+  --color-label-birthday: #f27ab3;
 }
 
 //Light Colors (Default)
@@ -23,6 +27,13 @@
   --color-text-variant: #434343;
   --color-accent: #cedf10;
   --color-on-accent: #111111;
+
+  //Event Labels
+  // Dot colors for calendar event labels (private, work, vacation, birthday).
+  --color-label-private: #2b8de8;
+  --color-label-work: #7b6ad8;
+  --color-label-vacation: #1f9e6e;
+  --color-label-birthday: #e04f93;
 
   //Glow Surfaces
   // Used by the glow-surface mixin. Same in both themes: the surface is

@@ -10,6 +10,8 @@ export const relations = defineRelations(schema, (r) => ({
     tasks: r.many.tasks(),
     // A user owns many notes (resolved via notes.user below).
     notes: r.many.notes(),
+    // A user owns many calendar events (resolved via events.user below).
+    events: r.many.events(),
     // A user can be signed in on several devices at once.
     sessions: r.many.session(),
     // One account row per linked login provider (currently GitHub).
@@ -27,6 +29,14 @@ export const relations = defineRelations(schema, (r) => ({
     // Every note belongs to exactly one user.
     user: r.one.user({
       from: r.notes.userId,
+      to: r.user.id,
+      optional: false,
+    }),
+  },
+  events: {
+    // Every calendar event belongs to exactly one user.
+    user: r.one.user({
+      from: r.events.userId,
       to: r.user.id,
       optional: false,
     }),

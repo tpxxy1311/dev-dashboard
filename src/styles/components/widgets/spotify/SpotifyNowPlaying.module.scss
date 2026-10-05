@@ -15,7 +15,8 @@
 .cover {
   inline-size: 4rem;
   aspect-ratio: 1;
-  border-radius: 0.75rem;
+  border-radius: 2rem;
+  corner-shape: squircle;
   overflow: hidden;
   background-color: color-mix(in srgb, var(--color-text) 10%, transparent);
 
@@ -96,7 +97,7 @@
 //Paused And Last Played
 // Dim the cover when nothing is actually playing.
 .nowPlaying:not([data-status="playing"]) .cover img {
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 @keyframes pulse {
