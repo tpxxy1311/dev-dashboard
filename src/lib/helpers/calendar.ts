@@ -33,11 +33,17 @@ export const getWeekRange = (date: Date): DateRange => {
   return { from, to: addWeeks(from, 1, { in: inAppTz }) };
 };
 
-/** The 1st of the month containing `date` until the 1st of the next month. */
-export const getMonthRange = (date: Date): DateRange => {
-  const from = startOfMonth(date, { in: inAppTz });
-  return { from, to: addMonths(from, 1, { in: inAppTz }) };
-};
+/** Monday 00:00 of the week `weeks` before (negative) or after `date`. */
+export const shiftWeek = (date: Date, weeks: number): Date =>
+  addWeeks(startOfWeek(date, weekOptions), weeks, { in: inAppTz });
+
+/** The 1st of the month containing `now`, 00:00: the default month to show. */
+export const getCurrentMonth = (now: Date): Date =>
+  startOfMonth(now, { in: inAppTz });
+
+/** The 1st of the month `months` before (negative) or after `month`. */
+export const shiftMonth = (month: Date, months: number): Date =>
+  addMonths(startOfMonth(month, { in: inAppTz }), months, { in: inAppTz });
 
 /**
  * All days shown in a month grid: from the Monday on or before the 1st until
@@ -49,25 +55,24 @@ export const getMonthGridRange = (month: Date): DateRange => {
   return { from, to: addWeeks(lastWeek, 1, { in: inAppTz }) };
 };
 
-/**
- * Range for the dashboard widget: from today 00:00 until the later of the
- * week's and the month's end (on Oct 29 the week ends in November).
- */
-export const getUpcomingRange = (now: Date): DateRange => {
-  const week = getWeekRange(now);
-  const month = getMonthRange(now);
-  return {
-    from: startOfDay(now, { in: inAppTz }),
-    to: week.to > month.to ? week.to : month.to,
-  };
-};
-
 /** One Date per day in the range (its `to` is exclusive). */
 export const getDaysInRange = ({ from, to }: DateRange): Date[] =>
   eachDayOfInterval(
     { start: from, end: subDays(to, 1, { in: inAppTz }) },
     { in: inAppTz },
   );
+
+/**
+ * Range covered by a list of day keys (sorted, e.g. a month grid's days):
+ * the first day 00:00 until the day after the last. Throws on invalid keys,
+ * since they always come from toDayKey.
+ */
+export const getRangeOfDayKeys = (dayKeys: string[]): DateRange => {
+  const from = parseDayKey(dayKeys[0]);
+  const last = parseDayKey(dayKeys.at(-1));
+  if (!from || !last) throw new Error("Expected valid, non-empty day keys");
+  return { from, to: addDays(last, 1, { in: inAppTz }) };
+};
 
 //URL Params
 
@@ -84,9 +89,22 @@ export const toMonthParam = (date: Date): string =>
 
 //Keys And Labels
 
-/** Stable per-day key for grouping and React keys: "2026-10-05". */
+/** Stable per-day key for grouping, React keys and URLs: "2026-10-05". */
 export const toDayKey = (date: Date): string =>
   format(date, "yyyy-MM-dd", { in: inAppTz });
+
+/**
+ * Parses a day key ("2026-10-05") into 00:00 of that day, or `null` if it is
+ * malformed or not a real date (e.g. "2026-02-31").
+ */
+export const parseDayKey = (value: string | undefined): Date | null => {
+  const match = value?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const [, year, month, day] = match.map(Number);
+  const date = new TZDate(year, month - 1, day, APP_TIME_ZONE);
+  // Date rolls invalid days over (Feb 31 → Mar 3), so check the round trip.
+  return toDayKey(date) === value ? date : null;
+};
 
 /** "14:30" */
 export const formatEventTime = (date: Date): string =>
@@ -95,6 +113,23 @@ export const formatEventTime = (date: Date): string =>
 /** "Mon, Oct 5" */
 export const formatDayHeading = (date: Date): string =>
   format(date, "EEE, MMM d", { in: inAppTz });
+
+/**
+ * Label for a week (or any range with an exclusive end), shortest form that
+ * stays unambiguous: "Oct 5 – 11", "Sep 29 – Oct 5", "Dec 28, 2026 – Jan 3, 2027".
+ */
+export const formatWeekRange = ({ from, to }: DateRange): string => {
+  const last = subDays(to, 1, { in: inAppTz });
+  const options = { in: inAppTz };
+
+  if (format(from, "yyyy", options) !== format(last, "yyyy", options)) {
+    return `${format(from, "MMM d, yyyy", options)} – ${format(last, "MMM d, yyyy", options)}`;
+  }
+  if (format(from, "MM", options) !== format(last, "MM", options)) {
+    return `${format(from, "MMM d", options)} – ${format(last, "MMM d", options)}`;
+  }
+  return `${format(from, "MMM d", options)} – ${format(last, "d", options)}`;
+};
 
 /** "October 2026" */
 export const formatMonthTitle = (date: Date): string =>
@@ -149,3 +184,50 @@ export const normalizeAllDayRange = (startsAt: Date, endsAt: Date) => {
 /** Last day an all-day event covers, for display and the form's end date. */
 export const getAllDayLastDay = (endsAt: Date): Date =>
   subDays(endsAt, 1, { in: inAppTz });
+
+/**
+ * Exclusive end for an all-day event from the form's end date input, which
+ * names the last day: "2026-10-05" → Oct 6 00:00. Inverse of getAllDayLastDay.
+ */
+export const toAllDayEnd = (lastDay: string): Date =>
+  addDays(fromDateTimeInputs(lastDay), 1, { in: inAppTz });
+
+//Grouping
+
+type TimedItem = { startsAt: Date; endsAt: Date; allDay: boolean };
+
+// All-day events first, then by start time.
+const compareInDay = (a: TimedItem, b: TimedItem): number =>
+  Number(b.allDay) - Number(a.allDay) ||
+  a.startsAt.getTime() - b.startsAt.getTime();
+
+/**
+ * Maps day keys to the events shown on that day. A multi-day event appears on
+ * every day it covers, clipped to `range`. Ends are exclusive, so an event
+ * ending at 00:00 does not show up on that day.
+ */
+export const groupEventsByDay = <T extends TimedItem>(
+  events: T[],
+  { from, to }: DateRange,
+): Map<string, T[]> => {
+  const days = new Map<string, T[]>();
+
+  for (const event of events) {
+    const first = event.startsAt > from ? event.startsAt : from;
+    const end = event.endsAt < to ? event.endsAt : to;
+
+    for (
+      let day = startOfDay(first, { in: inAppTz });
+      day < end;
+      day = addDays(day, 1, { in: inAppTz })
+    ) {
+      const key = toDayKey(day);
+      const list = days.get(key);
+      if (list) list.push(event);
+      else days.set(key, [event]);
+    }
+  }
+
+  for (const list of days.values()) list.sort(compareInDay);
+  return days;
+};

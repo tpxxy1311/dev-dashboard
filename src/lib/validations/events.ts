@@ -42,6 +42,9 @@ export const updateEventSchema = eventFields
 
 export const deleteEventSchema = z.object({ id: eventIdSchema });
 
+// Query of GET /api/events: any day of the week to load ("2026-10-05").
+export const weekQuerySchema = z.object({ start: z.iso.date() });
+
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 export type UpdateEventInput = z.infer<typeof updateEventSchema>;
 export type DeleteEventInput = z.infer<typeof deleteEventSchema>;

@@ -5,6 +5,7 @@ import {
   DocumentTextIcon,
   UserCircleIcon,
   HomeIcon,
+  CalendarDateRangeIcon
 } from "@heroicons/react/24/outline";
 import BackButton from "./backButton";
 import SignOutButton from "./signoutButton";
@@ -41,6 +42,11 @@ const Sidebar = () => {
           <li>
             <Link href="/notes" className={styles.link} aria-label="Notes">
               <DocumentTextIcon width={24} height={24} aria-hidden="true" />
+            </Link>
+          </li>
+           <li>
+            <Link href="/calendar" className={styles.link} aria-label="Account">
+              <CalendarDateRangeIcon width={24} height={24} aria-hidden="true" />
             </Link>
           </li>
         </ul>

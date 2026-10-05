@@ -1,0 +1,74 @@
+// src/styles/components/widgets/calendar/EventWeekNav.module.scss
+@use "../../../abstracts" as *;
+
+//Nav Container
+// Same pill container as the task filter in TaskHeader.module.scss.
+.nav {
+  --control-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.25rem;
+  block-size: var(--control-size);
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: var(--color-surface-overlay);
+}
+
+//Arrows
+.arrow {
+  display: grid;
+  place-items: center;
+  // Fills the container's inner height; aspect-ratio keeps it a circle.
+  block-size: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+//Range Label
+.range {
+  block-size: 100%;
+  padding-inline: 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  // Digits keep the same width, so the pill barely changes size while paging.
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+
+  // Current week: plain label, not visibly a button.
+  &:disabled {
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+//Hover
+// Only on devices with a real hover, to avoid sticky hover on touch.
+@media (hover: hover) {
+  .arrow:hover {
+    background: color-mix(in srgb, var(--color-text) 8%, var(--color-surface));
+  }
+
+  .range:not(:disabled):hover {
+    background: var(--color-surface);
+  }
+}

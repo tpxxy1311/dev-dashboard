@@ -9,8 +9,8 @@ export default async function Notes() {
   const notes = await getNotes(); // Fetch notes for the signed-in user
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <NoteList initialNotes={notes} />
-    </div>
+    </main>
   );
 }

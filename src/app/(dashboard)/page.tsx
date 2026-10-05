@@ -9,7 +9,7 @@ import CalendarWidget from "@/components/widgets/calendar/CalendarWidget";
 
 export default function Dashboard() {
   return (
-    <>
+    <main>
       <div className={styles.topWidgetRow}>
         <Suspense fallback={<p>Loading tasks…</p>}>
           <TaskWidget />
@@ -27,6 +27,6 @@ export default function Dashboard() {
       {/* <Suspense fallback={<p>Loading notes…</p>}>
         <NoteWidget />
       </Suspense> */}
-    </>
+    </main>
   );
 }

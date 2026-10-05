@@ -1,0 +1,58 @@
+// src/styles/components/widgets/calendar/DayCell.module.scss
+@use "../../../abstracts" as *;
+
+//Cell
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  // Grid items default to min-width: auto; 0 lets chips truncate.
+  min-width: 0;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+
+  @include up("md") {
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+  }
+
+  // Days of the previous or next month.
+  &[data-outside] {
+    background-color: transparent;
+  }
+}
+
+//Date
+.date {
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  inline-size: 1.75rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+
+  .cell[data-outside] & {
+    color: var(--color-text-variant);
+    opacity: 0.6;
+  }
+
+  .cell[data-today] & {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 700;
+  }
+}
+
+//Events
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

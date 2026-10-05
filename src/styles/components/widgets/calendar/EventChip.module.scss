@@ -1,0 +1,67 @@
+// src/styles/components/widgets/calendar/EventChip.module.scss
+@use "../../../abstracts" as *;
+
+//Chip
+.chip {
+  --label-color: var(--color-label-private);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: var(--text-xs);
+  line-height: 1.3;
+
+  //Label Colors
+  &[data-label="work"] {
+    --label-color: var(--color-label-work);
+  }
+
+  &[data-label="vacation"] {
+    --label-color: var(--color-label-vacation);
+  }
+
+  &[data-label="birthday"] {
+    --label-color: var(--color-label-birthday);
+  }
+
+  // All-day events: tinted bar instead of a dot, like most calendar apps.
+  &[data-all-day] {
+    background-color: color-mix(in srgb, var(--label-color) 25%, transparent);
+  }
+}
+
+//Dot
+.dot {
+  flex-shrink: 0;
+  inline-size: 0.4rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--label-color);
+
+  .chip[data-all-day] & {
+    display: none;
+  }
+}
+
+//Time
+// Hidden on small screens to leave room for the title.
+.time {
+  display: none;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-variant);
+
+  @include up("md") {
+    display: inline;
+  }
+}
+
+//Title
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
