@@ -1,5 +1,4 @@
 // src/app/(dashboard)/calendar/page.tsx
-import styles from "@/styles/layout/pages/Calendar.module.scss";
 import { requireUser } from "@/server/session";
 import { getEventsInRange } from "@/server/queries/events";
 import {
@@ -11,8 +10,7 @@ import {
   toDayKey,
   toMonthParam,
 } from "@/lib/helpers/calendar";
-import CalendarHeader from "@/components/widgets/calendar/CalendarHeader";
-import MonthGrid from "@/components/widgets/calendar/MonthGrid";
+import CalendarBoard from "@/components/widgets/calendar/CalendarBoard";
 
 // `?month=a&month=b` arrives as an array; only the first value counts.
 const resolveMonth = async (
@@ -30,8 +28,9 @@ export const generateMetadata = async ({
   return { title: `${formatMonthTitle(month)} · Calendar` };
 };
 
-export default async function Calendar({searchParams}: PageProps<"/calendar">) {
-  
+export default async function Calendar({
+  searchParams,
+}: PageProps<"/calendar">) {
   await requireUser();
 
   const now = new Date();
@@ -46,18 +45,14 @@ export default async function Calendar({searchParams}: PageProps<"/calendar">) {
 
   const monthKey = toMonthParam(month);
 
+  // Only strings and plain rows go to the board, so it can live on the client.
   return (
-    <main className={styles.page}>
-      <CalendarHeader
-        monthKey={monthKey}
-        isCurrentMonth={monthKey === toMonthParam(currentMonth)}
-      />
-      <MonthGrid
-        monthKey={monthKey}
-        dayKeys={getDaysInRange(range).map(toDayKey)}
-        todayKey={toDayKey(now)}
-        events={events}
-      />
-    </main>
+    <CalendarBoard
+      monthKey={monthKey}
+      isCurrentMonth={monthKey === toMonthParam(currentMonth)}
+      dayKeys={getDaysInRange(range).map(toDayKey)}
+      todayKey={toDayKey(now)}
+      events={events}
+    />
   );
 }

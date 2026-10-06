@@ -23,32 +23,51 @@ const API_URL = "https://api.spotify.com/v1";
 // returns 640, 300 and 64 px versions.
 const MIN_COVER_WIDTH = 300;
 
+// Spotify rejected the access token (401), see getSpotifyPlayback().
+class SpotifyUnauthorizedError extends Error {}
+
 const spotifyFetch = async (path: string, token: string) => {
   const res = await fetch(`${API_URL}${path}`, {
     headers: { Authorization: `Bearer ${token}` },
     // Playback state changes constantly, so never cache it.
     cache: "no-store",
   });
+  if (res.status === 401) {
+    throw new SpotifyUnauthorizedError(`Spotify API ${path} responded 401`);
+  }
   if (!res.ok) throw new Error(`Spotify API ${path} responded ${res.status}`);
   return res;
 };
 
-/**
- * Returns a valid Spotify access token for the user, refreshed by Better Auth
- * if needed. `null` if the user has not linked a Spotify account.
- */
-const getSpotifyToken = async (userId: string): Promise<string | null> => {
+/** The user's linked Spotify account, or `null` if there is none. */
+const getSpotifyAccountId = async (userId: string): Promise<string | null> => {
   const [spotifyAccount] = await db
     .select({ id: account.id })
     .from(account)
     .where(and(eq(account.userId, userId), eq(account.providerId, "spotify")))
     .limit(1);
-  if (!spotifyAccount) return null;
+  return spotifyAccount?.id ?? null;
+};
 
+/**
+ * Returns the stored access token. Better Auth refreshes it first if its
+ * stored expiry time has passed.
+ */
+const getSpotifyToken = async (accountId: string): Promise<string> => {
   const { accessToken } = await auth.api.getAccessToken({
-    body: { accountId: spotifyAccount.id },
+    body: { accountId },
     headers: await headers(),
   });
+  return accessToken;
+};
+
+/** Refreshes the access token now, regardless of its stored expiry time. */
+const refreshSpotifyToken = async (accountId: string): Promise<string> => {
+  const { accessToken } = await auth.api.refreshToken({
+    body: { accountId },
+    headers: await headers(),
+  });
+  if (!accessToken) throw new Error("Spotify token refresh returned no token");
   return accessToken;
 };
 
@@ -106,6 +125,9 @@ const getLastPlayed = async (token: string): Promise<NowPlaying | null> => {
   };
 };
 
+const loadNowPlaying = async (token: string) =>
+  (await getCurrentlyPlaying(token)) ?? (await getLastPlayed(token));
+
 /**
  * Returns what the signed-in user is listening to on Spotify: the current
  * track (playing or paused), otherwise the last played one. Used by the
@@ -115,12 +137,23 @@ export const getSpotifyPlayback = async (): Promise<SpotifyPlayback> => {
   const user = await requireUser();
 
   try {
-    const token = await getSpotifyToken(user.id);
-    if (!token) return { connected: false };
+    const accountId = await getSpotifyAccountId(user.id);
+    if (!accountId) return { connected: false };
 
-    const nowPlaying =
-      (await getCurrentlyPlaying(token)) ?? (await getLastPlayed(token));
-    return { connected: true, nowPlaying };
+    try {
+      const nowPlaying = await loadNowPlaying(await getSpotifyToken(accountId));
+      return { connected: true, nowPlaying };
+    } catch (error) {
+      if (!(error instanceof SpotifyUnauthorizedError)) throw error;
+
+      // Spotify rejected a token Better Auth still considers valid: refresh
+      // it once and retry.
+      console.warn("Spotify rejected the access token, refreshing it");
+      const nowPlaying = await loadNowPlaying(
+        await refreshSpotifyToken(accountId),
+      );
+      return { connected: true, nowPlaying };
+    }
   } catch (error) {
     console.error("Failed to load Spotify playback", error);
     return { connected: true, nowPlaying: null };

@@ -2,17 +2,22 @@
 @use "../../../abstracts" as *;
 
 //Grid Frame
+// Weekday row on top, the weeks fill the rest of the page.
 .grid {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 0.5rem;
   padding: 0.5rem;
-  border-radius: 5.5rem;
+  border-radius: 3.5rem;
   corner-shape: squircle;
   background-color: var(--color-container);
 
   @include up("md") {
+    // Fills the board below the header (the board is a flex column).
+    flex: 1;
+    min-height: 0;
     padding: 1rem;
-    border-radius: 5.5rem;
+    border-radius: 4rem;
     corner-shape: squircle;
   }
 }
@@ -46,11 +51,12 @@
 }
 
 //Day Cells
-// Rows grow with their content: no "+n more", every chip stays visible.
+// Small screens: rows grow with their chips and the page scrolls.
+// From md up: all weeks share the fixed height equally; cells scroll inside.
 .days {
   grid-auto-rows: minmax(4.5rem, auto);
 
   @include up("md") {
-    grid-auto-rows: minmax(7rem, auto);
+    grid-auto-rows: minmax(0, 1fr);
   }
 }

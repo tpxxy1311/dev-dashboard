@@ -16,10 +16,18 @@
   font-variation-settings: "ROND" 100;
 }
 
+//Actions
+// Month nav and the add button stay together when the header wraps.
+.actions {
+  --control-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 //Month Nav
 // Same pill container as EventWeekNav in the dashboard widget.
 .nav {
-  --control-size: 2.5rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -69,10 +77,30 @@
   }
 }
 
+//Add Button
+// Same round button as the "+" in TaskHeader.
+.addButton {
+  display: grid;
+  place-items: center;
+  inline-size: var(--control-size);
+  block-size: var(--control-size);
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
 //Hover
 // Only on devices with a real pointer, so taps don't leave a stuck hover.
 @media (hover: hover) {
-  .arrow:hover {
+  .arrow:hover,
+  .addButton:hover {
     background: var(--color-accent);
     color: var(--color-on-accent);
   }

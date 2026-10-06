@@ -12,7 +12,6 @@ type Props = {
 };
 
 const DayCell = ({ dayKey, events, isOutsideMonth, isToday }: Props) => {
-
   return (
     <li
       className={styles.cell}
@@ -32,7 +31,7 @@ const DayCell = ({ dayKey, events, isOutsideMonth, isToday }: Props) => {
       {events.length > 0 && (
         <ul className={styles.events}>
           {events.map((event) => (
-            <EventChip key={event.id} event={event} dayKey={dayKey}/>
+            <EventChip key={event.id} event={event} dayKey={dayKey} />
           ))}
         </ul>
       )}

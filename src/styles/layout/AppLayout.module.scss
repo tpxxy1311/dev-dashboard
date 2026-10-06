@@ -2,8 +2,6 @@
 
 //App Frame
 .app {
+  // Used by the shells in DashboardLayout and AuthLayout, which own the padding.
   --app-padding: 2rem;
-
-  min-height: 100dvh;
-  padding: var(--app-padding);
 }

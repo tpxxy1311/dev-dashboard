@@ -114,6 +114,10 @@ export const formatEventTime = (date: Date): string =>
 export const formatDayHeading = (date: Date): string =>
   format(date, "EEE, MMM d", { in: inAppTz });
 
+/** "Monday, October 5", the full date for screen readers in the month grid. */
+export const formatDayLabel = (date: Date): string =>
+  format(date, "EEEE, MMMM d", { in: inAppTz });
+
 /**
  * Label for a week (or any range with an exclusive end), shortest form that
  * stays unambiguous: "Oct 5 – 11", "Sep 29 – Oct 5", "Dec 28, 2026 – Jan 3, 2027".
@@ -230,4 +234,109 @@ export const groupEventsByDay = <T extends TimedItem>(
 
   for (const list of days.values()) list.sort(compareInDay);
   return days;
+};
+
+//Event Form
+
+/** The event dialog's input values, all as the strings the inputs hold. */
+export type EventFormValues = {
+  title: string;
+  label: string;
+  allDay: boolean;
+  startDate: string; // "2026-10-05"
+  startTime: string; // "09:00"
+  endDate: string; // last day for all-day events
+  endTime: string;
+};
+
+/** What the dialog sends to createEvent/updateEvent; dates as ISO strings. */
+export type EventInput = {
+  title: string;
+  label: string;
+  allDay: boolean;
+  startsAt: string;
+  endsAt: string;
+};
+
+type EventFields = Pick<TimedItem, "startsAt" | "endsAt" | "allDay"> & {
+  title: string;
+  label: string;
+};
+
+const DEFAULT_START_TIME = "09:00";
+const DEFAULT_END_TIME = "10:00";
+
+/**
+ * Initial dialog values: an existing event's fields (edit), or a new
+ * one-hour event on the given day (create).
+ */
+export const getEventFormDefaults = (
+  source: EventFields | string,
+): EventFormValues => {
+  if (typeof source === "string") {
+    return {
+      title: "",
+      label: "private",
+      allDay: false,
+      startDate: source,
+      startTime: DEFAULT_START_TIME,
+      endDate: source,
+      endTime: DEFAULT_END_TIME,
+    };
+  }
+
+  const { title, label, allDay, startsAt, endsAt } = source;
+
+  if (allDay) {
+    return {
+      title,
+      label,
+      allDay,
+      startDate: toDateInputValue(startsAt),
+      // Stored end is exclusive (next day 00:00); the form shows the last day.
+      endDate: toDateInputValue(getAllDayLastDay(endsAt)),
+      // Prefilled so unticking "All day" offers sensible times.
+      startTime: DEFAULT_START_TIME,
+      endTime: DEFAULT_END_TIME,
+    };
+  }
+
+  return {
+    title,
+    label,
+    allDay,
+    startDate: toDateInputValue(startsAt),
+    startTime: toTimeInputValue(startsAt),
+    endDate: toDateInputValue(endsAt),
+    endTime: toTimeInputValue(endsAt),
+  };
+};
+
+// Empty or broken inputs give an Invalid Date; "" lets Zod report the field
+// instead of toISOString() throwing.
+const toIsoOrEmpty = (date: Date): string =>
+  Number.isNaN(date.getTime()) ? "" : date.toISOString();
+
+/**
+ * Turns dialog values into the action input, read in APP_TIME_ZONE. All-day
+ * events get the exclusive end (day after the last day), so a one-day event
+ * passes "end after start" and optimistic chips land on the right days.
+ */
+export const toEventInput = (values: EventFormValues): EventInput => {
+  const { title, label, allDay, startDate, startTime, endDate, endTime } =
+    values;
+
+  return {
+    title,
+    label,
+    allDay,
+    startsAt: toIsoOrEmpty(
+      allDay
+        ? fromDateTimeInputs(startDate)
+        : fromDateTimeInputs(startDate, startTime),
+    ),
+    endsAt: toIsoOrEmpty(
+      allDay ? toAllDayEnd(endDate) : fromDateTimeInputs(endDate, endTime),
+    ),
+  };
 };

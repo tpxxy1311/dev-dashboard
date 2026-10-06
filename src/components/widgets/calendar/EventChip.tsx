@@ -5,7 +5,7 @@ import type { CalendarEvent } from "@/types/events";
 
 type Props = {
   event: CalendarEvent;
-  dayKey: String;
+  dayKey: string;
 };
 
 const EventChip = ({ event, dayKey }: Props) => {

@@ -1,0 +1,8 @@
+// src/styles/layout/AuthLayout.module.scss
+@use "../abstracts" as *;
+
+//Auth Frame
+.auth {
+  min-block-size: 100dvh;
+  padding: var(--app-padding);
+}

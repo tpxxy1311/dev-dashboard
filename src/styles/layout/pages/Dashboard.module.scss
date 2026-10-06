@@ -1,8 +1,9 @@
-.topWidgetRow{
-    width: 100%;
-    height: 40%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1rem;
+.topWidgetRow {
+  // <main> stretches its child to full height; keep the row at the top.
+  align-self: start;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
 }

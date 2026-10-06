@@ -1,0 +1,221 @@
+// src/styles/components/widgets/calendar/EventDialog.module.scss
+@use "../../../abstracts" as *;
+
+//Dialog
+// Native <dialog> opened with showModal(): centered by the browser,
+// rendered in the top layer above everything else.
+.dialog {
+  inline-size: min(100% - 2rem, 28rem);
+  max-block-size: calc(100dvh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 1.5rem;
+  background-color: var(--color-container);
+  color: var(--color-text);
+
+  // Tinted with the page background, so it works in both themes.
+  &::backdrop {
+    background-color: color-mix(in srgb, var(--color-bg) 60%, transparent);
+    backdrop-filter: blur(4px);
+  }
+}
+
+//Form
+.form {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+
+  @include up("md") {
+    padding: 1.5rem;
+  }
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "ROND" 100;
+}
+
+//Fields
+.field {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-variant);
+
+  input {
+    inline-size: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
+    border-radius: 0.75rem;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--text-base);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 1px;
+    }
+  }
+}
+
+// Date and time side by side; the time field disappears for all-day events
+// and the date then takes the full width.
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.srOnly {
+  @include visually-hidden;
+}
+
+//Label Picker
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-block-end: 0.5rem;
+    padding: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-variant);
+  }
+}
+
+.labelOption {
+  --label-color: var(--color-label-private);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--color-surface);
+  font-size: var(--text-sm);
+  cursor: pointer;
+
+  &[data-label="work"] {
+    --label-color: var(--color-label-work);
+  }
+
+  &[data-label="vacation"] {
+    --label-color: var(--color-label-vacation);
+  }
+
+  &[data-label="birthday"] {
+    --label-color: var(--color-label-birthday);
+  }
+
+  // Color dot in front of the name.
+  &::before {
+    content: "";
+    inline-size: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: var(--label-color);
+  }
+
+  // The radio stays in the form and keyboard order, just not visible.
+  input {
+    @include visually-hidden;
+  }
+
+  &:has(input:checked) {
+    background-color: color-mix(in srgb, var(--label-color) 25%, transparent);
+    box-shadow: inset 0 0 0 1.5px var(--label-color);
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+//All Day
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-sm);
+  cursor: pointer;
+
+  input {
+    inline-size: 1rem;
+    block-size: 1rem;
+    accent-color: var(--color-accent);
+  }
+}
+
+//Errors
+.error {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+}
+
+//Buttons
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-block-start: 0.5rem;
+
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 500;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+}
+
+.save {
+  .buttons & {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+}
+
+// Pushed to the left, away from Save.
+.delete {
+  margin-inline-end: auto;
+
+  .buttons & {
+    background-color: transparent;
+    color: var(--color-text-variant);
+  }
+}
+
+//Hover
+@media (hover: hover) {
+  .labelOption:hover {
+    background-color: color-mix(in srgb, var(--label-color) 15%, transparent);
+  }
+
+  .buttons button:not(:disabled):hover {
+    filter: brightness(0.95);
+  }
+
+  .buttons .delete:hover {
+    color: var(--color-text);
+  }
+}

@@ -1,0 +1,28 @@
+// src/styles/layout/DashboardLayout.module.scss
+@use "../abstracts" as *;
+
+//Shell
+// Header on top, page content below. From md up the shell is exactly one
+// viewport tall, so pages can stretch to the bottom edge without scrolling.
+// The padding lives here (border-box), so 100dvh needs no calc().
+.shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 2rem;
+  min-block-size: 100dvh;
+  padding: var(--app-padding);
+
+  @include up("md") {
+    block-size: 100dvh;
+  }
+}
+
+//Main
+// min-block-size: 0 lets the 1fr row stay at its size instead of growing
+// with the content. overflow: auto is a safety net: if a page ever does not
+// fit, it scrolls instead of being cut off.
+.main {
+  display: grid;
+  min-block-size: 0;
+  overflow: auto;
+}

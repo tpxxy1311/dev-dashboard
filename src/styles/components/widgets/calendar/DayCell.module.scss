@@ -13,8 +13,11 @@
   background-color: var(--color-surface);
 
   @include up("md") {
+    // Fixed row height: the chip list scrolls instead of growing the row.
+    min-height: 0;
     padding: 0.5rem;
-    border-radius: 0.75rem;
+    border-radius: 2.1rem;
+    corner-shape: squircle;
   }
 
   // Days of the previous or next month.
@@ -55,4 +58,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @include up("md") {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
 }
