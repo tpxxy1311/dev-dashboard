@@ -9,14 +9,34 @@
   max-block-size: calc(100dvh - 2rem);
   padding: 0;
   border: 0;
-  border-radius: 1.5rem;
+  border-radius: 3.5rem;
+  corner-shape: squircle;
   background-color: var(--color-container);
   color: var(--color-text);
 
-  // Tinted with the page background, so it works in both themes.
+  // Browsers dim the page behind modal dialogs by default; keep it clear.
+  // The backdrop still catches clicks, so clicking outside closes the dialog.
   &::backdrop {
-    background-color: color-mix(in srgb, var(--color-bg) 60%, transparent);
-    backdrop-filter: blur(4px);
+    background-color: transparent;
+  }
+}
+
+//Anchored Position
+// Opened from the "+" button: docks below it, right edges aligned. Only from
+// md up (on phones a centered dialog fits better) and only where anchor
+// positioning is supported; otherwise it stays centered. The anchor itself
+// is set inline via position-anchor in EventDialog.tsx.
+@include up("md") {
+  @supports (anchor-name: --a) {
+    .dialog[data-anchored] {
+      // Undo the browser's centering of modal dialogs.
+      inset: auto;
+      margin: 0;
+      top: calc(anchor(bottom) + 0.5rem);
+      right: anchor(right);
+      // Opens above the button if there is no room below.
+      position-try-fallbacks: flip-block;
+    }
   }
 }
 

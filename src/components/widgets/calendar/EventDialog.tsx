@@ -15,9 +15,11 @@ import {
   type CreateEventInput,
 } from "@/lib/validations/events";
 import type { OptimisticCalendarEvent } from "@/types/events";
+import { NEW_EVENT_ANCHOR } from "./CalendarHeader";
 
 export type EventDialogTarget =
-  | { mode: "create"; dayKey: string }
+  // anchored: opened from the "+" button, so it docks below it (md and up).
+  | { mode: "create"; dayKey: string; anchored?: boolean }
   | { mode: "edit"; event: OptimisticCalendarEvent };
 
 type Props = {
@@ -55,6 +57,7 @@ const readForm = (formData: FormData): EventFormValues => ({
 const EventDialog = ({ target, onSave, onDelete, onClose }: Props) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const editing = target.mode === "edit" ? target.event : null;
+  const anchored = target.mode === "create" && target.anchored === true;
 
   // Mounted only while open: show it as a modal right away.
   useEffect(() => {
@@ -95,6 +98,8 @@ const EventDialog = ({ target, onSave, onDelete, onClose }: Props) => {
     <dialog
       ref={dialogRef}
       className={styles.dialog}
+      data-anchored={anchored || undefined}
+      style={anchored ? { positionAnchor: NEW_EVENT_ANCHOR } : undefined}
       onClose={onClose}
       // A click on the backdrop targets the <dialog> itself.
       onClick={(e) =>

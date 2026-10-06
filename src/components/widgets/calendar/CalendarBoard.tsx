@@ -63,7 +63,8 @@ const CalendarBoard = ({
   // "New event" in the header: today in the current month, else the 1st.
   const defaultDayKey = isCurrentMonth ? todayKey : `${monthKey}-01`;
 
-  const openCreate = (dayKey: string) => setDialog({ mode: "create", dayKey });
+  const openCreate = (dayKey: string, anchored = false) =>
+    setDialog({ mode: "create", dayKey, anchored });
   const openEdit = (event: OptimisticCalendarEvent) =>
     setDialog({ mode: "edit", event });
   const closeDialog = () => setDialog(null);
@@ -120,7 +121,9 @@ const CalendarBoard = ({
       <CalendarHeader
         monthKey={monthKey}
         isCurrentMonth={isCurrentMonth}
-        onNewEvent={() => openCreate(defaultDayKey)}
+        // Only the dialog opened from "+" turns the plus into an "x".
+        isNewEventOpen={dialog?.mode === "create" && dialog.anchored === true}
+        onNewEvent={() => openCreate(defaultDayKey, true)}
       />
 
       {error && (
