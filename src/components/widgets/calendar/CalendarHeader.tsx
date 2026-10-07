@@ -40,9 +40,20 @@ const CalendarHeader = ({
 
   return (
     <header className={styles.header}>
-      <h2 className={styles.title}>{formatMonthTitle(month)}</h2>
-
       <div className={styles.actions}>
+        <button
+          type="button"
+          // While the dialog is open the page is inert: a click here hits the
+          // dialog's backdrop, which closes it. So this only ever opens.
+          onClick={onNewEvent}
+          aria-label={isNewEventOpen ? "Close new event" : "New event"}
+          aria-haspopup="dialog"
+          aria-expanded={isNewEventOpen}
+          className={styles.addButton}
+          style={{ anchorName: NEW_EVENT_ANCHOR }}
+        >
+          <PlusIcon width={24} height={24} aria-hidden="true" />
+        </button>
         <nav className={styles.nav} aria-label="Change month">
           <Link
             href={monthHref(shiftMonth(month, -1))}
@@ -58,31 +69,8 @@ const CalendarHeader = ({
           >
             <ChevronRightIcon width={20} height={20} aria-hidden="true" />
           </Link>
-          {isCurrentMonth ? (
-            // Already on the current month: plain label, nothing to navigate to.
-            <span className={styles.today} aria-current="date">
-              Today
-            </span>
-          ) : (
-            <Link href="/calendar" className={styles.today}>
-              Today
-            </Link>
-          )}
+          <p className={styles.month}>{formatMonthTitle(month)}</p>
         </nav>
-
-        <button
-          type="button"
-          // While the dialog is open the page is inert: a click here hits the
-          // dialog's backdrop, which closes it. So this only ever opens.
-          onClick={onNewEvent}
-          aria-label={isNewEventOpen ? "Close new event" : "New event"}
-          aria-haspopup="dialog"
-          aria-expanded={isNewEventOpen}
-          className={styles.addButton}
-          style={{ anchorName: NEW_EVENT_ANCHOR }}
-        >
-          <PlusIcon width={24} height={24} aria-hidden="true" />
-        </button>
       </div>
     </header>
   );

@@ -38,10 +38,11 @@ src/
 ├── app/
 │   ├── (auth)/          # public: login
 │   ├── (dashboard)/     # protected app
-│   └── api/auth/        # Better Auth handler
+│   └── api/             # Better Auth handler + Route Handlers for client-side loading
 ├── components/
 │   └── widgets/         # dashboard widgets (TaskWidget, TaskList, TaskItem)
 ├── lib/                 # client-safe code (auth-client)
+│   ├── helpers/         # pure helpers (dates, theme, …)
 │   └── validations/     # Zod schemas, shared by client and server
 ├── server/              # server-only code: auth, db, session
 │   ├── actions/         # Server Actions (writes)
@@ -117,6 +118,8 @@ Authentication without authorization is not enough.
 
 - Forms use `useActionState` with a small adapter inside the component that turns
   `FormData` into the object the action expects.
+- React resets a form after its action runs, even on errors: return the submitted
+  values with the errors and use them as `defaultValue`.
 - `useOptimistic` lives in the list component (e.g. `TaskList`), with a reducer over a
   discriminated union (`{ type: "add" | "toggle" | "delete", … }`). Optimistic calls
   outside `useActionState` go inside `startTransition`.
@@ -138,6 +141,11 @@ Authentication without authorization is not enough.
 - No manual `useMemo` / `useCallback` / `React.memo` — the React Compiler handles it.
 - The foreign key to `user.id` is **`text`**, not `uuid`.
 
+## Dates
+
+- All date math and formatting goes through `lib/helpers/calendar.ts`, which computes in `APP_TIME_ZONE` (the server runs in UTC). Don't use `date-fns` or `Date` getters (`getMonth()`, `getDay()` …) directly in components or queries.
+- Pass dates from Server to Client Components as day keys (`"2026-10-05"`) or ISO strings, not `TZDate`.
+
 ## Styling
 
 - Styles live in `src/styles/`, not next to the components.
@@ -147,6 +155,7 @@ Authentication without authorization is not enough.
   - `components/`: CSS Modules for reusable components, mirroring `src/components/` (e.g. `components/widgets/tasks/TaskList.module.scss`, loaded with `@use "../../../abstracts" as *;`).
 - Partials (only loaded via `@use`) start with `_`. Files imported from TSX end in `.module.scss` and have no `_`.
 - Name modules after their component: `Sidebar.tsx` uses `styles/layout/Sidebar.module.scss`.
+- `(dashboard)/layout.tsx` renders `<main>` inside a shell that is exactly one viewport tall from `md` up. Pages render a `<div>`, not `<main>`; to fill the height, use `grid-template-rows: … minmax(0, 1fr)` / `min-height: 0` down the chain.
 - In modules, load tools with `@use "../abstracts" as *;`. Use `@use`/`@forward`, never `@import`.
 - Write CSS mobile-first: base styles for small screens, then `@include up("md")`. Use `down()` only for small-screen-only exceptions.
 - Colors are semantic CSS custom properties from `base/_root.scss` (`--color-bg`, `--color-text`, `--color-accent`). Never hard-code colors in modules. Dark mode uses `prefers-color-scheme` and `[data-theme="dark"]`, with the dark values in the `dark-colors` mixin.

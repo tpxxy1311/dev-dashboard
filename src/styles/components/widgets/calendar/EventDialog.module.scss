@@ -33,7 +33,7 @@
       inset: auto;
       margin: 0;
       top: calc(anchor(bottom) + 0.5rem);
-      right: anchor(right);
+      left: anchor(left);
       // Opens above the button if there is no room below.
       position-try-fallbacks: flip-block;
     }
