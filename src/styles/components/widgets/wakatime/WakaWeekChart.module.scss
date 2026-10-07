@@ -1,0 +1,62 @@
+// src/styles/components/widgets/wakatime/WakaWeekChart.module.scss
+@use "../../../abstracts" as *;
+
+//Chart Frame
+// One column per day, bars grow from the bottom.
+.chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+//Day Column
+.day {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  gap: 0.25rem;
+  min-height: 0;
+}
+
+//Bars
+// The track shows the full height, the bar its share via --value (0–1).
+.track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 1.5rem;
+  height: 100%;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
+  overflow: hidden;
+}
+
+.bar {
+  width: 100%;
+  height: calc(var(--value) * 100%);
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+
+  .day[data-today] & {
+    background-color: var(--color-accent);
+  }
+}
+
+//Labels
+.label {
+  color: var(--color-text-variant);
+  font-size: 0.75rem;
+
+  .day[data-today] & {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+.srOnly {
+  @include visually-hidden;
+}
