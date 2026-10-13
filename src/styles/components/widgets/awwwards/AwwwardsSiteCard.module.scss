@@ -1,0 +1,169 @@
+// src/styles/components/widgets/awwwards/AwwwardsSiteCard.module.scss
+@use "../../../abstracts" as *;
+
+//Card
+// Thumbnail on top, text below. The title link is stretched over the whole
+// card (see Title), so the card is one click target. `position: relative`
+// makes the card the box it stretches to.
+.card {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  block-size: 100%;
+
+  // From md up the thumbnail takes whatever height the text leaves.
+  @include up("md") {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  // Focus ring on the whole card instead of the (stretched) title link.
+  &:has(.title a:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 2rem;
+  }
+}
+
+//Thumbnail
+// 16:10 on small screens, where the page scrolls. From md up it fills the
+// height left in the card and is cropped to it. The background shows while
+// the image loads.
+.thumbnail {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 2rem;
+  corner-shape: squircle;
+  background-color: color-mix(in srgb, var(--color-text) 10%, transparent);
+  transition: opacity 150ms ease;
+
+  .card:hover & {
+    opacity: 0.85;
+  }
+
+  @include up("md") {
+    block-size: 100%;
+    min-block-size: 0;
+    aspect-ratio: auto;
+  }
+}
+
+//Text
+.info {
+  display: grid;
+  align-content: start;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+//Title
+// One line with an ellipsis. The link's ::after covers the card; it isn't
+// clipped by `overflow: hidden` here, since the card is its containing block.
+.title {
+  overflow: hidden;
+  font-size: var(--text-base);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @include up("md") {
+    font-size: var(--text-lg);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    .card:hover & {
+      text-decoration: underline;
+    }
+  }
+}
+
+//Meta
+// "by Author · Tue, Oct 13", wraps on narrow cards.
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  color: var(--color-text-variant);
+  font-size: var(--text-xs);
+
+  > * + *::before {
+    content: "·";
+    margin-inline-end: 0.375rem;
+  }
+}
+
+//Awards And Tags
+// Badges first, then tags, in one wrapping row.
+.chips,
+.awards,
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.awards,
+.tags {
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-xs);
+}
+
+.awards li {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.tags li {
+  padding: 0.125rem 0.5rem;
+  border-radius: 1rem;
+  background-color: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+//Visit Link
+// Sits above the stretched title link, so it stays clickable on its own.
+.visit {
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  color: var(--color-text-variant);
+  font-size: var(--text-xs);
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.visuallyHidden {
+  @include visually-hidden;
+}
+
+//Reduced Motion
+@media (prefers-reduced-motion: reduce) {
+  .thumbnail {
+    transition: none;
+  }
+}
