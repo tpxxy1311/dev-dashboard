@@ -43,6 +43,12 @@
   --color-glow-blue-core: #070d63;
   --color-glow-blue-edge: #2b8de8;
   --color-glow-blue-tint: #9d8fe6;
+  // Light variant (glow-border mixin): white core, so text goes dark.
+  --color-on-glow-light: #0b1f12;
+  --color-on-glow-light-variant: #0b1f12b3;
+  --color-glow-green-core: #ffffff;
+  --color-glow-green-edge: #1db954;
+  --color-glow-green-tint: #b8f5cc;
 }
 
 //Dark Mode From System Setting

@@ -11,6 +11,7 @@
   corner-shape: squircle;
   width: 100%;
   height: 20vh;
+  @include glow-surface("blue");
   @include up("md") {
     padding: 1.5rem;
   }
