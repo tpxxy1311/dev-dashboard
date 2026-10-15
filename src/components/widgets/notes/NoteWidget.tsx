@@ -2,6 +2,7 @@
 import Link from "next/link";
 import styles from "@/styles/components/widgets/notes/NoteWidget.module.scss";
 import { getFeaturedNote } from "@/server/queries/notes";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const NoteWidget = async () => {
   // Most recently pinned note, or the newest one if none is pinned
@@ -13,8 +14,12 @@ const NoteWidget = async () => {
         <h2 id="note-widget-title" className={styles.title}>
           Notes
         </h2>
-        <Link href="/notes" className={styles.link}>
+        <Link href="/notes" className={styles.headerLink}>
           All notes
+          <ChevronRightIcon
+            className={styles.headerLinkIcon}
+            aria-hidden="true"
+          />
         </Link>
       </header>
 
