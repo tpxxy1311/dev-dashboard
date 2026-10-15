@@ -2,45 +2,48 @@
 @use "../../../abstracts" as *;
 
 //Card
-// Thumbnail on top, text below. The title link is stretched over the whole
-// card (see Title), so the card is one click target. `position: relative`
-// makes the card the box it stretches to.
+// Thumbnail and text share one grid cell ("stack"), so the text lies on top of
+// the image. The title link is stretched over the whole card (see Title), so
+// the card is one click target. `position: relative` makes the card the box it
+// stretches to.
 .card {
   position: relative;
   display: grid;
-  gap: 0.75rem;
+  grid-template-areas: "stack";
   block-size: 100%;
+  overflow: hidden;
+  border-radius: 2rem;
+  corner-shape: squircle;
+  // Shows while the image loads.
+  background-color: color-mix(in srgb, var(--color-text) 10%, transparent);
 
-  // From md up the thumbnail takes whatever height the text leaves.
+  // From md up the card fills the row's height (it is not set by the image).
   @include up("md") {
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
   }
 
   // Focus ring on the whole card instead of the (stretched) title link.
+  // `overflow: hidden` doesn't clip the card's own outline.
   &:has(.title a:focus-visible) {
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
-    border-radius: 2rem;
   }
 }
 
 //Thumbnail
-// 16:10 on small screens, where the page scrolls. From md up it fills the
-// height left in the card and is cropped to it. The background shows while
-// the image loads.
+// Background of the card. 4:3 on small screens, where it sets the card's
+// height. From md up it fills the card and is cropped to it.
 .thumbnail {
+  grid-area: stack;
   inline-size: 100%;
   block-size: auto;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   object-position: top;
-  border-radius: 2rem;
-  corner-shape: squircle;
-  background-color: color-mix(in srgb, var(--color-text) 10%, transparent);
-  transition: opacity 150ms ease;
+  transition: transform 300ms ease;
 
   .card:hover & {
-    opacity: 0.85;
+    transform: scale(1.04);
   }
 
   @include up("md") {
@@ -51,11 +54,29 @@
 }
 
 //Text
+// Bottom of the card, on a dark gradient so it stays readable on any image.
+// Text tokens switch to light values (like the glow-surface mixin), in both
+// themes. z-index lifts it above the thumbnail, which is painted on top while
+// its hover transform is active. No `position` here: the card must stay the
+// box the title link stretches to.
 .info {
+  --color-text: var(--color-on-glow);
+  --color-text-variant: var(--color-on-glow-variant);
+
+  grid-area: stack;
+  align-self: end;
+  z-index: 1;
   display: grid;
-  align-content: start;
   gap: 0.375rem;
   min-width: 0;
+  padding: 3rem 1rem 1rem;
+  color: var(--color-text);
+  background: linear-gradient(to top, var(--color-scrim) 40%, transparent);
+
+  @include up("md") {
+    padding-inline: 1.25rem;
+    padding-block-end: 1.25rem;
+  }
 }
 
 //Title
@@ -132,10 +153,12 @@
   letter-spacing: 0.06em;
 }
 
+// Translucent pills; the blur keeps them readable on busy images.
 .tags li {
   padding: 0.125rem 0.5rem;
   border-radius: 1rem;
-  background-color: color-mix(in srgb, var(--color-text) 12%, transparent);
+  background-color: color-mix(in srgb, var(--color-text) 15%, transparent);
+  backdrop-filter: blur(6px);
 }
 
 //Visit Link
@@ -165,5 +188,9 @@
 @media (prefers-reduced-motion: reduce) {
   .thumbnail {
     transition: none;
+  }
+
+  .card:hover .thumbnail {
+    transform: none;
   }
 }

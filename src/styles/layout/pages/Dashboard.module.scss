@@ -8,7 +8,7 @@
 .page {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 1rem;
+  gap: 1.5rem;
   min-block-size: 0;
 }
 

@@ -32,13 +32,13 @@ export default function Dashboard() {
         </div>
       </div>
       <div className={styles.bottomWidgetRow}>
+        <Suspense fallback={<p>Loading notes…</p>}>
+          <NoteWidget />
+        </Suspense>
         <Suspense fallback={<p>Loading Awwwards Sites...</p>}>
           <AwwwardsWidget />
         </Suspense>
       </div>
-      {/* <Suspense fallback={<p>Loading notes…</p>}>
-        <NoteWidget />
-      </Suspense> */}
     </div>
   );
 }
