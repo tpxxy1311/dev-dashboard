@@ -49,6 +49,12 @@
   --color-glow-green-core: #ffffff;
   --color-glow-green-edge: #1db954;
   --color-glow-green-tint: #b8f5cc;
+
+  //Scrim
+  // Dark gradient behind text on images (e.g. Awwwards cards). Same in both
+  // themes, since the image doesn't change with the theme. Text on it uses
+  // --color-on-glow.
+  --color-scrim: #000000bf;
 }
 
 //Dark Mode From System Setting
