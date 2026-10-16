@@ -2,7 +2,7 @@
 import Link from "next/link";
 import styles from "@/styles/components/widgets/notes/NoteWidget.module.scss";
 import { getFeaturedNote } from "@/server/queries/notes";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon, PaperClipIcon } from "@heroicons/react/24/outline";
 
 const NoteWidget = async () => {
   // Most recently pinned note, or the newest one if none is pinned
@@ -15,7 +15,7 @@ const NoteWidget = async () => {
           Notes
         </h2>
         <Link href="/notes" className={styles.headerLink}>
-          All notes
+          All Notes
           <ChevronRightIcon
             className={styles.headerLinkIcon}
             aria-hidden="true"
@@ -25,13 +25,20 @@ const NoteWidget = async () => {
 
       {note ? (
         <article className={styles.note}>
-          {note.pinnedAt && <p className={styles.badge}>Pinned</p>}
-          {note.title && <h3 className={styles.noteTitle}>{note.title}</h3>}
+          <div className={styles.noteHeader}>
+            {note.title && <h3 className={styles.noteTitle}>{note.title}</h3>}
+            {note.pinnedAt && (
+              <p className={styles.badge}>
+                <PaperClipIcon className={styles.badgeIcon} aria-hidden="true" />
+                <span className={styles.visuallyHidden}>Pinned</span>
+              </p>
+            )}
+          </div>
           <p className={styles.content}>{note.content}</p>
         </article>
       ) : (
         <p className={styles.empty}>
-          No notes yet. <Link href="/notes">Create your first note</Link>
+          No Notes yet. <Link href="/notes">Create your first Note</Link>
         </p>
       )}
     </section>

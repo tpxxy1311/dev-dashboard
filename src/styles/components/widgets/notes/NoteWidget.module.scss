@@ -69,28 +69,60 @@
 
 //Note
 .note {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+  border-radius: 2.5rem;
+  corner-shape: squircle;
+  background-color: var(--color-container);
+  padding: 1rem 1rem 1rem;
 }
 
-.badge {
-  justify-self: start;
-  margin: 0;
-  padding: 0.125rem 0.5rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
-  color: var(--color-accent);
-  font-size: 0.75rem;
-  font-weight: 500;
+//Note Header
+// Title on the left, pin on the right. The pin pushes itself to the right
+// with an auto margin, so it stays there even when the note has no title.
+.noteHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .noteTitle {
+  min-width: 0;
   margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// Round accent chip with the pin icon.
+.badge {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  inline-size: 2rem;
+  aspect-ratio: 1;
+  margin: 0;
+  margin-inline-start: auto;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.badgeIcon {
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+}
+
+.visuallyHidden {
+  @include visually-hidden;
 }
 
 .content {
   display: -webkit-box;
   margin: 0;
+  flex: 1;
   overflow: hidden;
   white-space: pre-line;
   -webkit-box-orient: vertical;

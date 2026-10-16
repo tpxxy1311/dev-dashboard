@@ -10,6 +10,7 @@
   grid-template-rows: auto minmax(0, 1fr);
   gap: 1.5rem;
   min-block-size: 0;
+  overflow: hidden;
 }
 
 //Top Row
@@ -37,5 +38,5 @@
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.5rem;
 }
