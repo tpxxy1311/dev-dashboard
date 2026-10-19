@@ -121,7 +121,10 @@ const EventList = ({ initialEvents, initialWeekStart }: Props) => {
 
       <div className={styles.content} aria-busy={isLoading}>
         {events.length === 0 ? (
-          <p className={styles.empty}>No events this week.</p>
+          <div className={styles.emptyContainer}>
+            <p className={styles.emptyNumber}>0</p>
+            <p className={styles.emptyText}>No events this week.</p>
+          </div>
         ) : (
           <ol className={styles.days}>
             {groupByDay(events).map((group) => (

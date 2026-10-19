@@ -11,13 +11,13 @@ type Props = {
   defaultContent?: string;
   pending?: boolean;
   fieldErrors?: Record<string, string[] | undefined>;
-  error?: string | null;
   onCancel?: () => void;
 };
 
 /**
- * Title + content form, shared by "create" (NoteList) and inline "edit" (NoteItem).
- * Presentational: the parent decides what happens on submit.
+ * Title + content form, shared by "create" (NoteDialog) and inline "edit" (NoteItem).
+ * Presentational: the parent decides what happens on submit and on cancel.
+ * Server errors are shown by NoteList, since the dialog has closed by then.
  */
 const NoteEditor = ({
   action,
@@ -26,19 +26,19 @@ const NoteEditor = ({
   defaultContent = "",
   pending = false,
   fieldErrors,
-  error,
   onCancel,
 }: Props) => {
   // Several editors can be on the page at once, so ids must be unique.
   const id = useId();
   const titleError = fieldErrors?.title?.[0];
   const contentError = fieldErrors?.content?.[0];
-  const formError = !titleError && !contentError ? error : null;
 
   return (
     <form
       action={action}
       className={styles.form}
+      // Inline edit has no native Escape handling; in the dialog onCancel
+      // closes it the same way the browser would.
       onKeyDown={(e) => {
         if (e.key === "Escape" && onCancel) onCancel();
       }}
@@ -75,12 +75,6 @@ const NoteEditor = ({
       {contentError && (
         <p id={`${id}-content-error`} role="alert" className={styles.error}>
           {contentError}
-        </p>
-      )}
-
-      {formError && (
-        <p role="alert" className={styles.error}>
-          {formError}
         </p>
       )}
 

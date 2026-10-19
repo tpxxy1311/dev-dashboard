@@ -177,7 +177,7 @@ const TaskList = ({ initialTasks }: Props) => {
         <div className={styles.emptyContainer}>
           <p className={styles.emptyNumber}>0</p>
           <p className={styles.emptyText}>
-            {filter === "open" ? "No open tasks." : "No completed tasks yet."}
+            {filter === "open" ? "No open Tasks." : "No completed Tasks yet."}
           </p>
         </div>
       ) : (

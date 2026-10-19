@@ -1,14 +1,10 @@
 // src/components/widgets/notes/NoteList.tsx
 "use client";
 
-import {
-  startTransition,
-  useActionState,
-  useOptimistic,
-  useState,
-} from "react";
+import { startTransition, useOptimistic, useState } from "react";
 import styles from "@/styles/components/widgets/notes/NoteList.module.scss";
-import NoteEditor from "./NoteEditor";
+import NoteDialog from "./NoteDialog";
+import NoteHeader from "./NoteHeader";
 import NoteItem from "./NoteItem";
 import {
   createNote,
@@ -16,15 +12,9 @@ import {
   toggleNotePin,
   updateNote,
 } from "@/server/actions/notes";
-import { createNoteSchema } from "@/lib/validations/notes";
-import type { ActionResult } from "@/types/action";
 import type { Note, OptimisticNote } from "@/types/note";
 
 type Props = { initialNotes: Note[] };
-
-// Keeps the submitted values so the form can be refilled after an error.
-type CreateState =
-  (ActionResult<Note> & { values: { title: string; content: string } }) | null;
 
 type OptimisticAction =
   | { type: "add"; note: OptimisticNote }
@@ -41,12 +31,6 @@ const pinnedTime = (note: OptimisticNote) =>
 const byPinnedThenNewest = (a: OptimisticNote, b: OptimisticNote) =>
   pinnedTime(b) - pinnedTime(a) ||
   b.createdAt.getTime() - a.createdAt.getTime();
-
-// FormData values can also be files; only text fields are expected here.
-const textField = (formData: FormData, name: string) => {
-  const value = formData.get(name);
-  return typeof value === "string" ? value : "";
-};
 
 const applyAction = (
   notes: OptimisticNote[],
@@ -83,40 +67,31 @@ const NoteList = ({ initialNotes }: Props) => {
   >(initialNotes, applyAction);
   const [itemError, setItemError] = useState<string | null>(null);
 
-  // Runs inside a transition (started by useActionState), so optimistic updates are allowed.
-  const submitCreate = async (
-    _prev: CreateState,
-    formData: FormData,
-  ): Promise<CreateState> => {
-    const values = {
-      title: textField(formData, "title"),
-      content: textField(formData, "content"),
-    };
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-    // Same schema as the server: skips the optimistic row for invalid input.
-    const parsed = createNoteSchema.safeParse(values);
-    if (parsed.success) {
-      const now = new Date();
-      applyOptimistic({
-        type: "add",
-        note: {
-          id: crypto.randomUUID(),
-          userId: "",
-          title: parsed.data.title,
-          content: parsed.data.content,
-          pinnedAt: null,
-          createdAt: now,
-          updatedAt: now,
-          pending: true,
-        },
-      });
-    }
+  // Called from NoteDialog's form action with validated values. Runs inside
+  // that action's transition, so optimistic updates are allowed here.
+  const handleCreate = async (title: string | null, content: string) => {
+    setItemError(null);
+    const now = new Date();
+    applyOptimistic({
+      type: "add",
+      note: {
+        id: crypto.randomUUID(),
+        userId: "",
+        title,
+        content,
+        pinnedAt: null,
+        createdAt: now,
+        updatedAt: now,
+        pending: true,
+      },
+    });
 
-    const result = await createNote(values);
-    return { ...result, values };
+    // The dialog has closed by now, so errors show above the list.
+    const result = await createNote({ title, content });
+    if (!result.ok) setItemError(result.error);
   };
-
-  const [state, formAction, isPending] = useActionState(submitCreate, null);
 
   const handleUpdate = (id: string, title: string | null, content: string) => {
     setItemError(null);
@@ -145,22 +120,20 @@ const NoteList = ({ initialNotes }: Props) => {
     });
   };
 
-  const createFailed = state !== null && !state.ok;
-
   return (
     <div className={styles.noteList}>
-      <NoteEditor
-        // Remount after each submit so the fields show the right defaults:
-        // empty after success, the submitted values after an error.
-        key={state ? JSON.stringify(state.values) + state.ok : "new"}
-        action={formAction}
-        submitLabel={isPending ? "Adding…" : "Add note"}
-        defaultTitle={createFailed ? state.values.title : ""}
-        defaultContent={createFailed ? state.values.content : ""}
-        pending={isPending}
-        fieldErrors={createFailed ? state.fieldErrors : undefined}
-        error={createFailed ? state.error : null}
+      <NoteHeader
+        isNewNoteOpen={isCreateOpen}
+        onNewNote={() => setIsCreateOpen(true)}
       />
+
+      {/* Mounted only while open, so every dialog starts empty. */}
+      {isCreateOpen && (
+        <NoteDialog
+          onSave={handleCreate}
+          onClose={() => setIsCreateOpen(false)}
+        />
+      )}
 
       {itemError && (
         <p role="alert" className={styles.error}>

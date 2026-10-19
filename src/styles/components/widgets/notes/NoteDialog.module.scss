@@ -1,0 +1,57 @@
+// src/styles/components/widgets/notes/NoteDialog.module.scss
+@use "../../../abstracts" as *;
+
+//Dialog
+// Native <dialog> opened with showModal(): centered by the browser,
+// rendered in the top layer above everything else. Same surface as EventDialog.
+.dialog {
+  inline-size: min(100% - 2rem, 32rem);
+  max-block-size: calc(100dvh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 3.5rem;
+  corner-shape: squircle;
+  background-color: var(--color-container);
+  color: var(--color-text);
+
+  // Keep the page behind visible; the backdrop still catches clicks,
+  // so clicking outside closes the dialog.
+  &::backdrop {
+    background-color: transparent;
+  }
+}
+
+//Anchored Position
+// Docks below the "+" button in NoteHeader, left edges aligned. Only from md
+// up and only where anchor positioning is supported; otherwise it stays
+// centered. The anchor itself is set inline via position-anchor in NoteDialog.tsx.
+@include up("md") {
+  @supports (anchor-name: --a) {
+    .dialog {
+      // Undo the browser's centering of modal dialogs.
+      inset: auto;
+      margin: 0;
+      top: calc(anchor(bottom) + 0.5rem);
+      left: anchor(left);
+      // Opens above the button if there is no room below.
+      position-try-fallbacks: flip-block;
+    }
+  }
+}
+
+//Content
+.content {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+
+  @include up("md") {
+    padding: 1.5rem;
+  }
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-variation-settings: "ROND" 100;
+}
