@@ -5,8 +5,10 @@ import { useState } from "react";
 import { z } from "zod";
 import styles from "@/styles/components/widgets/notes/NoteItem.module.scss";
 import NoteEditor from "./NoteEditor";
+import NoteActions from "./NoteActions";
 import { updateNoteSchema } from "@/lib/validations/notes";
 import type { OptimisticNote } from "@/types/note";
+import {PaperClipIcon} from "@heroicons/react/24/outline";
 
 type Props = {
   note: OptimisticNote;
@@ -49,6 +51,8 @@ const NoteItem = ({ note, onUpdate, onTogglePin, onDelete }: Props) => {
   return (
     <li
       className={styles.item}
+      // Hover hook for the NoteActions tray (see NoteActions.module.scss).
+      data-note-card
       data-pinned={isPinned}
       data-pending={note.pending}
     >
@@ -63,38 +67,26 @@ const NoteItem = ({ note, onUpdate, onTogglePin, onDelete }: Props) => {
         />
       ) : (
         <>
-          {isPinned && <p className={styles.badge}>Pinned</p>}
-          {note.title && <h3 className={styles.title}>{note.title}</h3>}
-          <p className={styles.content}>{note.content}</p>
-
-          {/* Optimistic rows have a temporary id that does not exist in the DB yet. */}
-          <div className={styles.actions}>
+          <div className={styles.header}>
+            {note.title && <h3 className={styles.title}>{note.title}</h3>}
             <button
               type="button"
               onClick={() => onTogglePin(note.id, !isPinned)}
               disabled={note.pending}
               aria-pressed={isPinned}
-              className={styles.actionButton}
+              className={styles.pinButton}
             >
-              {isPinned ? "Unpin" : "Pin"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEditing(true)}
-              disabled={note.pending}
-              className={styles.actionButton}
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => onDelete(note.id)}
-              disabled={note.pending}
-              className={styles.actionButton}
-            >
-              Delete
+              <PaperClipIcon className={styles.pinIcon} aria-hidden="true" />
             </button>
           </div>
+          <p className={styles.content}>{note.content}</p>
+
+          {/* Optimistic rows have a temporary id that does not exist in the DB yet. */}
+          <NoteActions
+            disabled={note.pending}
+            onEdit={() => setIsEditing(true)}
+            onDelete={() => onDelete(note.id)}
+          />
         </>
       )}
     </li>

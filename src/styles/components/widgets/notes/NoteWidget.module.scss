@@ -108,11 +108,10 @@
   border-radius: 50%;
   background-color: var(--color-accent);
   color: var(--color-on-accent);
-}
-
-.badgeIcon {
-  inline-size: 0.8rem;
-  block-size: 0.8rem;
+  .badgeIcon {
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+  }
 }
 
 .visuallyHidden {
