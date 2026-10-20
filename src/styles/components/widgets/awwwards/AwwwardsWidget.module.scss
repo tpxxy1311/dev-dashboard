@@ -2,9 +2,8 @@
 @use "../../../abstracts" as *;
 
 //Widget Frame
-// Fills the bottom row: title at its own height, the cards take the rest.
+// Fills its slot in the bottom row: title at its own height, the cards take the rest.
 .widget {
-  flex: 1;
   min-width: 0;
   min-block-size: 0;
   display: grid;

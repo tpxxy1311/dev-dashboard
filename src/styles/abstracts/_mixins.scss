@@ -1,4 +1,7 @@
 // src/styles/abstracts/_mixins.scss
+@use "sass:map";
+@use "variables" as *;
+@use "breakpoints" as *;
 
 //Dark Mode
 // Styles the current selector in dark mode, from the system setting or the
@@ -27,6 +30,29 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+//Widget Frame
+// Shape and spacing shared by framed widgets and their skeletons.
+// The size comes from the dashboard layout; $size only picks the radius from
+// $widget-radius. The surface is separate: include glow-surface / glow-border
+// after this mixin to replace the default container background.
+@mixin widget-frame($size: "lg") {
+  @if not map.has-key($widget-radius, $size) {
+    @error 'Unknown widget size "#{$size}". Available: #{map.keys($widget-radius)}';
+  }
+
+  display: grid;
+  gap: 1rem;
+  min-block-size: 0;
+  padding: 1rem;
+  border-radius: map.get($widget-radius, $size);
+  corner-shape: squircle;
+  background-color: var(--color-container);
+
+  @include up("md") {
+    padding: 1.5rem;
+  }
 }
 
 //Glow Surface

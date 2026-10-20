@@ -1,6 +1,7 @@
 // src/app/(dashboard)/page.tsx
 import styles from "@/styles/layout/pages/Dashboard.module.scss";
 import { Suspense } from "react";
+import WidgetSkeleton from "@/components/ui/widgetSkeleton";
 import GitHubWidget from "@/components/widgets/github/GitHubWidget";
 import NoteWidget from "@/components/widgets/notes/NoteWidget";
 import TaskWidget from "@/components/widgets/tasks/TaskWidget";
@@ -13,29 +14,31 @@ export default function Dashboard() {
   return (
     <div className={styles.page}>
       <div className={styles.topWidgetRow}>
-        <Suspense fallback={<p>Loading Tasks…</p>}>
+        <Suspense fallback={<WidgetSkeleton label="Tasks" />}>
           <TaskWidget />
         </Suspense>
-        <Suspense fallback={<p>Loading GitHub Activity…</p>}>
+        <Suspense fallback={<WidgetSkeleton label="GitHub activity" />}>
           <GitHubWidget />
         </Suspense>
-        <Suspense fallback={<p>Loading Events…</p>}>
+        <Suspense fallback={<WidgetSkeleton label="Events this week" />}>
           <CalendarWidget />
         </Suspense>
         <div className={styles.widgetColumn}>
-          <Suspense fallback={<p>Loading Spotify…</p>}>
+          <Suspense fallback={<WidgetSkeleton label="Spotify" size="sm" />}>
             <SpotifyWidget />
           </Suspense>
-          <Suspense fallback={<p>Loading WakaTime...</p>}>
+          <Suspense fallback={<WidgetSkeleton label="WakaTime" size="sm" />}>
             <WakaTimeWidget />
           </Suspense>
         </div>
       </div>
       <div className={styles.bottomWidgetRow}>
-        <Suspense fallback={<p>Loading notes…</p>}>
+        <Suspense fallback={<WidgetSkeleton label="Notes" size="sm" />}>
           <NoteWidget />
         </Suspense>
-        <Suspense fallback={<p>Loading Awwwards Sites...</p>}>
+        <Suspense
+          fallback={<WidgetSkeleton label="Recent Inspirations" size="sm" />}
+        >
           <AwwwardsWidget />
         </Suspense>
       </div>

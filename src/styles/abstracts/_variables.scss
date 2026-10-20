@@ -10,3 +10,10 @@ $sidebar-radius: 200px;
 //Note Actions
 $note-actions-peek: 0.75rem; // visible top of the tray while collapsed
 $note-actions-close-delay: 200ms;
+
+//Widget Frame
+$widget-radius: (
+  "lg": 6rem,
+  // full-height slots
+  "sm": 4rem, // half-height slots (stacked in a column)
+);

@@ -1,18 +1,8 @@
-// src/styles/components/widgets/spotify/SpotifyWidget.module.scss
+// src/styles/components/widgets/wakatime/WakaTimeWidget.module.scss
 @use "../../../abstracts" as *;
 
 //Widget Frame
 .widget {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: var(--color-container);
-  border-radius: 4rem;
-  corner-shape: squircle;
-  width: 100%;
-  height: 20vh;
+  @include widget-frame("sm");
   @include glow-surface("blue");
-  @include up("md") {
-    padding: 1.5rem;
-  }
 }

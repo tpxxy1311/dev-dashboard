@@ -14,29 +14,44 @@
 }
 
 //Top Row
+// The layout owns the slot sizes, the widgets only fill them. That keeps the
+// row stable while widgets (or their fallbacks) load one after another.
+// Small screens: one slot per row, each 40vh tall.
+// From md up: four columns in a single 40vh row. minmax(0, …) keeps the
+// tracks at their share, whatever the content needs.
 .topWidgetRow {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  display: grid;
+  grid-auto-rows: 40vh;
   gap: 1rem;
 
-  .widgetColumn {
-    height: 40vh;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  @include up("md") {
+    grid-template-columns:
+      minmax(0, 30fr) minmax(0, 22fr) minmax(0, 22fr)
+      minmax(0, 26fr);
+    grid-template-rows: minmax(0, 1fr);
+    block-size: 40vh;
   }
 }
 
-//Bottom Row
-// Widgets stretch to the row's height (the space left in <main>).
-.bottomWidgetRow {
-  width: 100%;
+// Two widgets stacked in one slot, splitting its height evenly.
+.widgetColumn {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
   min-block-size: 0;
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
+}
+
+//Bottom Row
+// Small screens: widgets stacked at their content height.
+// From md up: notes 40%, inspirations the rest, both stretched to the row's
+// height (the space left in <main>).
+.bottomWidgetRow {
+  display: grid;
   gap: 1.5rem;
+  min-block-size: 0;
+
+  @include up("md") {
+    grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
 }

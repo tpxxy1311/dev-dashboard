@@ -3,16 +3,5 @@
 
 //Widget Frame
 .widget {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: var(--color-container);
-  border-radius: 6rem;
-  corner-shape: squircle;
-  width: 30%;
-  height: 40vh;
-  @include up("md") {
-    padding: 1.5rem;
-  }
+  @include widget-frame("lg");
 }
-

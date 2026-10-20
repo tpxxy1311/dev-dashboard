@@ -53,18 +53,6 @@ const AwwwardsSiteCard = ({ site }: SiteCardProps) => {
             ))}
           </ul>
         </div>
-
-        {site.websiteUrl && (
-          <a
-            className={styles.visit}
-            href={site.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit site
-            <span className={styles.visuallyHidden}>: {site.title}</span>
-          </a>
-        )}
       </div>
     </article>
   );

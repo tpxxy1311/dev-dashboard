@@ -4,18 +4,9 @@
 //Widget Frame
 // Two equal rows: push count on top, contribution calendar below.
 .widget {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
+  @include widget-frame("lg");
   @include glow-surface("blue");
-  border-radius: 6rem;
-  corner-shape: squircle;
-  width: 22%;
-  height: 40vh;
-  @include up("md") {
-    padding: 1.5rem;
-  }
+  grid-template-rows: 1fr 1fr;
 }
 
 //Title

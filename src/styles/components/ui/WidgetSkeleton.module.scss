@@ -1,0 +1,26 @@
+// src/styles/components/ui/WidgetSkeleton.module.scss
+@use "../../abstracts" as *;
+
+//Sizes
+// Same frame as the widget, so the radius matches.
+.lg {
+  @include widget-frame("lg");
+}
+
+.sm {
+  @include widget-frame("sm");
+}
+
+//Skeleton
+// Empty, slightly transparent widget frame. The slot in the dashboard layout
+// sets its size. Comes after the sizes so it overrides the frame's background.
+// Small screens: bottom-row slots are content-sized, so the skeleton keeps a
+// minimum height there instead of collapsing to nothing.
+.skeleton {
+  min-block-size: 12rem;
+  background-color: color-mix(in srgb, var(--color-container) 50%, transparent);
+
+  @include up("md") {
+    min-block-size: 0;
+  }
+}
