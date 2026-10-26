@@ -107,7 +107,7 @@
   }
   .label:hover .checkbox:not(:disabled, :checked) {
     border-color: var(--color-text);
-    background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
+    //background-color: color-mix(in srgb, var(--color-text) 8%, transparent);
   }
 
 }

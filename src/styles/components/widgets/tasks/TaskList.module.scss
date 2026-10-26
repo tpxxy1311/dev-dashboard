@@ -93,6 +93,9 @@
 
 //Tasks
 .list {
+  // Height of the fade at the bottom edge.
+  --fade-size: 2rem;
+
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -104,4 +107,13 @@
   flex: 1;
   font-size: 0.9rem;
   overflow-y: auto;
+  @include hide-scrollbar;
+  // Fades the content out towards the bottom edge.
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - var(--fade-size)),
+    transparent
+  );
+  // Lets the last item scroll fully out of the faded zone.
+  padding-block-end: var(--fade-size);
 }

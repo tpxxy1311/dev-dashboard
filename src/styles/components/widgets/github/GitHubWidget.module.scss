@@ -5,7 +5,7 @@
 // Two equal rows: push count on top, contribution calendar below.
 .widget {
   @include widget-frame("lg");
-  @include glow-surface("blue");
+  @include glow-surface-rect("blue");
   grid-template-rows: 1fr 1fr;
 }
 

@@ -19,8 +19,21 @@
 .skeleton {
   min-block-size: 12rem;
   background-color: color-mix(in srgb, var(--color-container) 50%, transparent);
+  animation: pulse 1s ease-in-out infinite;
 
   @include up("md") {
     min-block-size: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+//Pulse
+// Fades the skeleton between full and half opacity to signal loading.
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
   }
 }
