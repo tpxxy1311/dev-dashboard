@@ -1,4 +1,5 @@
 // src/app/(auth)/login/page.tsx
+import styles from "@/styles/layout/pages/Login.module.scss";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/session";
 import GitHubSignInButton from "@/components/auth/gitHubSignInButton";
@@ -9,5 +10,13 @@ export default async function LoginPage() {
   const session = await getSession();
   if (session) redirect("/");
 
-  return <GitHubSignInButton />;
+  return (
+    <div className={styles.page}>
+      <div className={styles.loginContainer}>
+        <h2 className={styles.headline}>Let's get started!</h2>
+        <p className={styles.subtext}>Sign in with your GitHub Account to access your personal Dashboard.</p>
+        <GitHubSignInButton />
+      </div>
+    </div>
+  );
 }

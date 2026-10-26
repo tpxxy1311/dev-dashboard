@@ -1,0 +1,51 @@
+// src/styles/layout/pages/Login.module.scss
+@use "../../abstracts" as *;
+
+//Page Frame
+// Centers the login card in the full-height auth frame.
+.page {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100vh;
+  //min-block-size: calc(100dvh - 2 * var(--app-padding));
+}
+
+//Login Container
+// Same squircle frame and glow as the widgets. The text tokens are reset to
+// the dark on-glow-light values, since the card's core is white.
+.loginContainer {
+  //@include widget-frame("sm");
+  @include glow-border("green");
+  --color-text: var(--color-on-glow-light);
+  --color-text-variant: var(--color-on-glow-light-variant);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  //inline-size: min(100%, 28rem);
+  justify-items: center;
+  gap: 1.5rem;
+  //padding: 2.5rem 1.5rem;
+  text-align: center;
+
+  @include up("md") {
+    //padding: 3.5rem 3rem;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+//Text
+.headline {
+  font-size: 1.7rem;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.subtext {
+  margin: 0;
+  max-inline-size: 30ch;
+  letter-spacing: -0.03em;
+  color: var(--color-text-variant);
+}

@@ -1,0 +1,22 @@
+//
+
+.signInButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-container);
+    color: var(--text);
+    border: none;
+    border-radius: 5.375rem; /* Rounded corners */
+    cursor: pointer;
+    corner-shape: squircle;
+}
+
+//Icon
+.icon {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    flex-shrink: 0;
+}
